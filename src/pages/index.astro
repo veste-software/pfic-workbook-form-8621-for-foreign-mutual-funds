@@ -1,37 +1,50 @@
 ---
 import Base from '../layouts/Base.astro';
+import Workbook from '../components/Workbook';
+import { withBase } from '../lib/url';
 ---
 <Base
   title="PFIC calculator for Form 8621, lot by lot | PFIC Workbook"
-  description="Enter every SIP or ETF purchase once. Your browser works out the per-lot §1291 or mark-to-market figures and fills the official IRS Form 8621 for each fund."
+  description="Enter every SIP or ETF purchase once. Your browser works out the per-lot §1291 figures for Form 8621. Nothing leaves your device."
 >
-  <section style="padding-top: var(--row); position: relative;">
-    <h1>Fill Form 8621 for every fund,<br />lot by lot.</h1>
-    <p style="margin-top: var(--half); font-size: 1.25rem;">
-      Paste your purchase lots and year-end values. You get the Part IV or Part V figures for each
-      lot and the official IRS form, filled. Nothing leaves this browser.
-    </p>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Form 8621 · PFIC</p>
+      <h1>Fill Form 8621 for every fund, lot by lot.</h1>
+      <p class="lede">Paste your purchases and sales. The workbook spreads each gain over the days you held it and shows the Part V lines. It all runs in this browser.</p>
+    </div>
+    <figure class="intro-art">
+      <img src={withBase('/art/hero.svg')} width="1200" height="720" alt="Monthly purchase slips on a ruled analysis pad, feeding one Form 8621" fetchpriority="high" />
+      <figcaption class="caption">Exhibit A — monthly slips, one pad, one form per fund.</figcaption>
+    </figure>
   </section>
 
-  <section id="workbook" aria-label="Workbook" style="margin-top: var(--row); position: relative;">
-    <!-- Scaffold: the Builder replaces this static ledger with the Preact workbook island (PLAN.md task 3). -->
-    <table class="ledger">
-      <caption class="caption" style="caption-side: bottom; text-align: left; padding-top: 0.5rem;">
-        One row per purchase, dividend reinvestment or redemption, in the fund's currency.
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">Date</th>
-          <th scope="col">Type</th>
-          <th scope="col" class="num">Units</th>
-          <th scope="col" class="num">Amount</th>
-          <th scope="col" class="num">FX to USD</th>
-          <th scope="col" class="num">USD</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="6"><em>No lots yet. Paste them from your spreadsheet or add the first one.</em></td></tr>
-      </tbody>
-    </table>
+  <Workbook client:load />
+
+  <figure class="art-after">
+    <img src={withBase('/art/hero.svg')} width="1200" height="720" alt="" loading="lazy" />
+    <figcaption class="caption">Exhibit A — monthly slips, one pad, one form per fund.</figcaption>
+  </figure>
+
+  <section class="section" aria-labelledby="steps-h">
+    <h2 id="steps-h">What happens to your rows</h2>
+    <ol class="steps">
+      <li>
+        <img src={withBase('/art/spot-1.svg')} width="400" height="300" alt="" loading="lazy" />
+        <h3>List every lot</h3>
+        <p>Date, units and amount for each purchase, reinvested dividend and sale, with the rate to USD for that day.</p>
+      </li>
+      <li>
+        <img src={withBase('/art/spot-2.svg')} width="400" height="300" alt="" loading="lazy" />
+        <h3>Sales are matched first in, first out</h3>
+        <p>Each sale takes the oldest units first. A part-sold lot is split in proportion to its units.</p>
+      </li>
+      <li>
+        <img src={withBase('/art/spot-3.svg')} width="400" height="300" alt="" loading="lazy" />
+        <h3>Read off the lines</h3>
+        <p>Gain per day held, tax at each earlier year's top rate, and interest from that year's due date.</p>
+      </li>
+    </ol>
+    <p class="disclaimer" style="margin-top: var(--row);">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
   </section>
 </Base>

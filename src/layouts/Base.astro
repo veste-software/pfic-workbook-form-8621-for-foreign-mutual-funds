@@ -1,9 +1,4 @@
 ---
-import '@fontsource/source-serif-4/400.css';
-import '@fontsource/source-serif-4/400-italic.css';
-import '@fontsource/source-serif-4/600.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import { withBase } from '../lib/url';
 
@@ -16,12 +11,6 @@ const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const analyticsSrc = import.meta.env.PUBLIC_ANALYTICS_SRC;
 const analyticsDomain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
-
-const nav = [
-  { href: '/', label: 'Workbook' },
-  { href: '/how-it-works', label: 'How it works' },
-  { href: '/pricing', label: 'Pricing' },
-];
 ---
 <!doctype html>
 <html lang="en">
@@ -40,31 +29,28 @@ const nav = [
   </head>
   <body class="pad">
     <a class="skip-link" href="#main">Skip to the workbook</a>
-    <header class="sheet no-print" style="padding-top: var(--half); padding-bottom: var(--half);">
-      <nav aria-label="Main" style="display:flex; flex-wrap:wrap; align-items:center; gap: 0.5rem 1.5rem;">
-        <a href={withBase('/')} style="display:inline-flex; align-items:center; gap:0.6rem; text-decoration:none; color:var(--ink); margin-right:auto;">
-          <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
-            <rect x="1" y="1" width="30" height="30" fill="#EEF2E6" stroke="#2F5D46" stroke-width="1.5" />
-            <path d="M6 10H26M6 16H26M6 22H26" stroke="#2F5D46" stroke-width="1.5" />
-            <path d="M15 24L18 28L27 15" fill="none" stroke="#B3261E" stroke-width="2" stroke-linecap="square" />
-          </svg>
-          <span style="font-weight:600; font-size:1.125rem;">PFIC Workbook</span>
+    <header class="sheet no-print">
+      <div class="masthead">
+        <a class="brand" href={withBase('/')}>
+          <img src={withBase('/brand/logo.svg')} width="28" height="28" alt="" />
+          <span>PFIC Workbook</span>
         </a>
-        {nav.map((item) => (
-          <a class="label" href={withBase(item.href)}>{item.label}</a>
-        ))}
-      </nav>
+        <nav aria-label="Main" style="display:flex; gap: 0 1.5rem;">
+          <a href={withBase('/how-it-works')}>Method</a>
+          <a href={withBase('/pricing')}>Pricing</a>
+        </nav>
+      </div>
     </header>
     <main id="main" class="sheet">
       <slot />
     </main>
-    <footer class="sheet" style="margin-top: calc(var(--row) * 3); padding-bottom: var(--row);">
+    <footer class="sheet colophon">
       <hr class="double-rule" />
       <p class="caption">PFIC Workbook works out Form 8621 figures from the numbers you enter. Everything stays in your browser. This is not tax advice.</p>
-      <p class="label" style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+      <nav aria-label="Legal">
         <a href={withBase('/impressum')}>Impressum</a>
         <a href={withBase('/datenschutz')}>Privacy (Datenschutz)</a>
-      </p>
+      </nav>
     </footer>
   </body>
 </html>
