@@ -156,7 +156,7 @@ export default function Workbook() {
         .map((x) => ({ name: x.f.name, result: (x.o as { result: FundResult }).result }));
       const zip = await buildZip(items, taxYear);
       save(zip, 'application/zip', `pfic-workbook-${taxYear}.zip`);
-      track('PDF downloaded', { funds: items.length });
+      track('ZIP downloaded', { funds: items.length });
       setDlMsg('ZIP saved to your downloads. It holds statements, a CSV and the lines to type, for every fund you have unlocked.');
     } catch {
       setDlMsg('The files could not be built in this browser. Try the CSV instead.');
@@ -508,7 +508,7 @@ export default function Workbook() {
           <div>
             <h3 style="margin-top: 0;">Fund {idx + 1} needs the {taxYear} license</h3>
             <p class="price">USD 55 <small>for tax year {taxYear}, all funds on one return</small></p>
-            <p>Your first fund is free in full. The license unlocks results and PDF for every further fund of tax year {taxYear}.</p>
+            <p>Your first fund is free in full. The license unlocks results, statements and the lines to type into Form 8621 for every further fund of tax year {taxYear}.</p>
             <p class="caption">
               PFIC Pro's calculator covers 5 funds for USD 485 (<a href="https://expattaxtools.com/pfic-pro-calculator/" rel="noopener">expattaxtools.com</a>). Refund on request within 14 days.
             </p>

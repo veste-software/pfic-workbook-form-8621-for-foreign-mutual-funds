@@ -6,7 +6,7 @@ const jsonLd = [{
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'PFIC Workbook',
-  description: 'Per-lot section 1291 and mark-to-market figures for IRS Form 8621, filled into the official PDF in the browser.',
+  description: 'Per-lot section 1291 and mark-to-market figures for IRS Form 8621, with the lines to type into the official form, worked out in your browser.',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Any (web browser)',
   url: new URL(withBase('/'), Astro.site).href,
@@ -56,7 +56,7 @@ const jsonLd = [{
         <p>Gain per day held, tax at each earlier year's top rate, and interest from that year's due date.</p>
       </li>
     </ol>
-    <p class="price-line" style="margin-top: var(--row);">Your first fund is free, filled PDF included. All funds for tax year 2025: USD 55, once. <a href={withBase('/pricing')}>See pricing</a></p>
+    <p class="price-line" style="margin-top: var(--row);">Your first fund is free, statements and line values included. All funds for tax year 2025: USD 55, once. <a href={withBase('/pricing')}>See pricing</a></p>
     <p class="disclaimer" style="margin-top: var(--row);">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
   </section>
 </Base>

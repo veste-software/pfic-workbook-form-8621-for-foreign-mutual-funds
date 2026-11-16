@@ -110,5 +110,5 @@ A designer who looked at the real pages said: Looks like a careful accountant's 
 
 ## QA round 2
 
-- [ ] [QA round 2] Pages and the locked panel promise a filled Form 8621 PDF, but PDF filling is not implemented (public/forms/f8621.pdf, fill.ts, field map and pdf test are missing). Remove every 'filled PDF' claim an… (src/pages/index.astro:9 and :59; src/pages/pricing.astro:29; src/components/Workbook.tsx:511 and :159)
-- [ ] [QA round 2] The IRS rate table starts at 2017-Q1, so any §1291 holding that began before 2017 is blocked at line 16f, and no page says so (how-it-works wrongly names 2003 as the limit). State 'interest available… (src/pages/how-it-works.astro:94; src/pages/pricing.astro; src/components/Workbook.tsx; src/data/irs-underpayment-rates.json)
+- [x] [QA round 2] Pages and the locked panel promise a filled Form 8621 PDF, but PDF filling is not implemented (public/forms/f8621.pdf, fill.ts, field map and pdf test are missing). Remove every 'filled PDF' claim an… (src/pages/index.astro:9 and :59; src/pages/pricing.astro:29; src/components/Workbook.tsx:511 and :159)
+- [x] [QA round 2] The IRS rate table starts at 2017-Q1, so any §1291 holding that began before 2017 is blocked at line 16f, and no page says so (how-it-works wrongly names 2003 as the limit). State 'interest available… (src/pages/how-it-works.astro:94; src/pages/pricing.astro; src/components/Workbook.tsx; src/data/irs-underpayment-rates.json)
