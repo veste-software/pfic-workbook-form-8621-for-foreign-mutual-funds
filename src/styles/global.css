@@ -13,3 +13,47 @@
 .empty-state img { width: 100%; height: auto; }
 @media (max-width: 40rem) { .empty-state { grid-template-columns: 1fr; } .empty-state img { max-width: 7rem; } }
 .textarea-paste { min-height: 9rem; }
+
+/* Visual round 1: settings above the drop area, mobile header, ruled prose */
+.fund-tabs { display: flex; flex-direction: column; align-items: flex-start; gap: 0; margin: var(--half) 0; }
+.fund-tabs-row { display: flex; flex-wrap: wrap; gap: 0 var(--half); align-items: center; }
+.fund-tabs .fund-tabs-row:first-child { gap: var(--quarter) var(--quarter); }
+.fields { grid-template-columns: minmax(12rem, 2fr) minmax(7rem, 1fr) minmax(16rem, 2fr); }
+.fields > .ln { top: 2.15rem; }
+.fields-more { margin-top: var(--row); grid-template-columns: minmax(10rem, 1fr) minmax(10rem, 1fr) minmax(12rem, 1fr); }
+.fields-more .input { min-width: 0; }
+.choice span { white-space: nowrap; }
+.narrow-only { display: none; }
+.masthead nav { display: flex; gap: 0 1.5rem; }
+.pad-sheet p { line-height: var(--row); }
+.pad-sheet .drop-example { line-height: 1.7; }
+.pad-sheet .drop-note, .pad-sheet .caption { line-height: 1.5; }
+.drop > .ln { top: 1.5rem; }
+.results-empty { display: grid; grid-template-columns: 10rem 1fr; gap: var(--half) var(--gutter); align-items: start; margin-top: var(--half); }
+.results-empty img { width: 100%; height: auto; }
+.results-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--gutter); }
+.results-preview > p { grid-column: 1 / -1; margin: 0; }
+.results-line.ghost { opacity: 0.45; }
+.results-line.ghost .figure { color: var(--ink-soft); }
+@media (max-width: 52rem) {
+  .fields { grid-template-columns: 2fr 1fr; }
+  .fields > .field:nth-of-type(3) { grid-column: 1 / -1; }
+  .fields-more { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 40rem) {
+  .wide-only { display: none !important; }
+  .narrow-only { display: flex; }
+  .fields-more { grid-template-columns: 1fr; }
+  .ex-fx { display: none; }
+  .results-empty { grid-template-columns: 1fr; }
+  .results-empty img { max-width: 8rem; }
+  .masthead { flex-wrap: nowrap; min-height: 56px; gap: 0 1rem; }
+  .masthead nav { display: flex; gap: 0 1rem; margin-left: auto; }
+  .brand { font-size: 1.0625rem; margin-right: 0; white-space: nowrap; }
+  .masthead nav a { letter-spacing: 0.06em; min-height: 44px; }
+  .fund-tabs .btn { min-height: 44px; padding: 0 0.75rem; }
+}
+@media (max-width: 26rem) {
+  .fields { grid-template-columns: 2fr 1fr; }
+  .results-preview { grid-template-columns: 1fr; }
+}

@@ -15,11 +15,20 @@ const PUBLIC_KEY = (import.meta.env.PUBLIC_LICENSE_PUBLIC_KEY as string | undefi
 const DISCLAIMER = 'Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.';
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'INR', 'CHF', 'CAD', 'AUD', 'JPY', 'SGD'];
 const STATUSES = ['Single', 'Married filing jointly', 'Married filing separately', 'Head of household', 'Qualifying surviving spouse'];
-const EXAMPLE = `2023-01-05\tbuy\t10.000\t1000.00\t0.0120
-2023-02-05\tbuy\t10.000\t1020.00\t0.0121
-2025-08-20\tredeem\t20.000\t2300.00\t0.0118`;
+const EXAMPLE: string[][] = [
+  ['2023-01-05', 'buy   ', ' 10.000', ' 1000.00', '0.0120'],
+  ['2023-02-05', 'buy   ', ' 10.000', ' 1020.00', '0.0121'],
+  ['2025-08-20', 'redeem', ' 20.000', ' 2300.00', '0.0118'],
+];
 
-const whole = (n: number) => Math.round(n).toLocaleString('en-US');
+function isRealDate(s: string): boolean {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) return false;
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  return d.getUTCFullYear() === +m[1] && d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3];
+}
+
+const whole =(n: number) => Math.round(n).toLocaleString('en-US');
 const cents = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function Line({ ln, label, value, note }: { ln: string; label: string; value: string; note?: string }) {
@@ -108,7 +117,18 @@ export default function Workbook() {
   const setSettings = (p: Partial<WorkbookState['settings']>) => setState((s) => ({ ...s, settings: { ...s.settings, ...p } }));
   const setTaxYear = (y: 2025 | 2026) => setSettings({ taxYear: y });
   const setStatus = (v: string) => setSettings({ filingStatus: v });
-  const setUsDate = (v: string) => setSettings({ usPersonDate: v || undefined });
+  const [usText, setUsText] = useState('');
+  const [usTouched, setUsTouched] = useState(false);
+  useEffect(() => {
+    if (!usTouched) setUsText(usDate);
+  }, [usDate, usTouched, loaded]);
+  const usDateBad = usText !== '' && !isRealDate(usText);
+  function onUsDate(v: string) {
+    setUsTouched(true);
+    setUsText(v);
+    if (v.trim() === '') setSettings({ usPersonDate: undefined });
+    else if (isRealDate(v.trim())) setSettings({ usPersonDate: v.trim() });
+  }
   const setName = (v: string) => patch({ name: v });
   const setCurrency = (v: string) => patch({ currency: v });
   const setRegime = (v: Regime) => patch({ regime: v });
@@ -281,49 +301,49 @@ export default function Workbook() {
             <option value="2026">2026</option>
           </select>
         </label>
-        <label>
+        <label class="wide-only">
           Filing status{' '}
           <select value={status} onChange={(e) => setStatus(e.currentTarget.value)}>
             {STATUSES.map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
-        <span class="push">Form 8621, one per fund</span>
+        <span class="push wide-only">Form 8621, one per fund</span>
       </div>
 
-      <div class="fund-tabs" role="group" aria-label="Funds" style="display:flex;flex-wrap:wrap;gap:var(--quarter);align-items:center;margin-top:var(--half);">
-        {state.funds.map((f, i) => (
-          <button key={i} type="button" class={i === idx ? 'btn btn-primary' : 'btn btn-secondary'} aria-pressed={i === idx} onClick={() => { setActive(i); setConfirmDelete(false); }}>
-            {f.name || `Fund ${i + 1}`}
-          </button>
-        ))}
-        <button type="button" class="btn-quiet" onClick={addFund}>Add a fund</button>
-        {!confirmDelete ? (
-          <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(true)}>Delete this fund</button>
-        ) : (
+      <div class="fund-tabs" role="group" aria-label="Funds">
+        <div class="fund-tabs-row">
+          {state.funds.map((f, i) => (
+            <button key={i} type="button" class={i === idx ? 'btn btn-primary' : 'btn btn-secondary'} aria-pressed={i === idx} onClick={() => { setActive(i); setConfirmDelete(false); }}>
+              {f.name || `Fund ${i + 1}`}
+            </button>
+          ))}
+          <button type="button" class="btn-quiet" onClick={addFund}>Add a fund</button>
+          {state.funds.length > 1 && !confirmDelete && (
+            <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(true)}>Delete this fund</button>
+          )}
+        </div>
+        {confirmDelete && (
           <span role="alertdialog" aria-label="Confirm delete">
             Delete {name || `Fund ${idx + 1}`} and its lots?{' '}
             <button type="button" class="btn-quiet" onClick={deleteFund}>Yes, delete</button>{' '}
             <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(false)}>Keep it</button>
           </span>
         )}
-      </div>
-      <div class="drop-actions" style="margin-top: var(--quarter);">
-        <button type="button" class="btn-quiet" onClick={exportFile}>Save workbook file</button>
-        <label class="btn-quiet" style="cursor:pointer;">
-          Open workbook file
-          <input ref={openRef} class="visually-hidden" type="file" accept=".json,application/json" onChange={(e) => { void openFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; }} />
-        </label>
+        <div class="fund-tabs-row">
+          <button type="button" class="btn-quiet" onClick={exportFile}>Save workbook file</button>
+          <label class="btn-quiet" style="cursor:pointer;">
+            Open workbook file
+            <input ref={openRef} class="visually-hidden" type="file" accept=".json,application/json" onChange={(e) => { void openFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; }} />
+          </label>
+        </div>
         <span class="caption" role="status" aria-live="polite">{fileMsg || 'Saved automatically in this browser.'}</span>
       </div>
 
-      <div class="fields">
+      <div class="fields has-ln">
+        <span class="ln" aria-hidden="true">1</span>
         <div class="field">
           <label class="label" for="fund-name">Fund name</label>
           <input id="fund-name" class="input" value={name} placeholder="Name as on your statement" onInput={(e) => setName(e.currentTarget.value)} />
-        </div>
-        <div class="field">
-          <label class="label" for="fund-isin">ISIN or scheme code (optional)</label>
-          <input id="fund-isin" class="input" value={isin} onInput={(e) => patch({ isin: e.currentTarget.value })} />
         </div>
         <div class="field">
           <label class="label" for="fund-ccy">Currency</label>
@@ -340,41 +360,25 @@ export default function Workbook() {
           <div class="choice" role="radiogroup" aria-labelledby="regime-label">
             <label>
               <input type="radio" name="regime" checked={regime === '1291'} onChange={() => setRegime('1291')} />
-              <span>§1291 default</span>
+              <span>§1291</span>
             </label>
             <label>
               <input type="radio" name="regime" checked={regime === 'mtm'} onChange={() => setRegime('mtm')} />
               <span>Mark-to-market</span>
             </label>
-            <label>
-              <input type="radio" name="regime" checked={regime === 'qef'} disabled />
-              <span>QEF</span>
-            </label>
           </div>
-          <p class="caption">QEF is not supported in this version. See a preparer.</p>
-        </div>
-        {regime === 'mtm' && (
-          <div class="field">
-            <label class="label" for="elect-year">First year of the election</label>
-            <select id="elect-year" class="input" value={electYear} onChange={(e) => setElectYear(e.currentTarget.value)}>
-              <option value="">From my first lot</option>
-              {[2022, 2023, 2024, 2025, 2026].filter((y) => y <= taxYear).map((y) => <option key={y} value={String(y)}>{y} (late election, §1296(j))</option>)}
-            </select>
-          </div>
-        )}
-        <div class="field">
-          <label class="label" for="us-date">US taxpayer since (optional)</label>
-          <input id="us-date" class="input" type="date" value={usDate} onInput={(e) => setUsDate(e.currentTarget.value)} />
         </div>
       </div>
+      <p class="caption" style="margin-top: var(--quarter);">QEF is not supported in this version. See a preparer.</p>
 
       <div
-        class={dropClass}
+        class={`${dropClass} has-ln`}
         style="margin-top: var(--row);"
         onDragOver={(e) => { e.preventDefault(); setDrop('over'); }}
         onDragLeave={() => setDrop('idle')}
         onDrop={(e) => { e.preventDefault(); setDrop('idle'); void readFile(e.dataTransfer?.files?.[0]); }}
       >
+        <span class="ln" aria-hidden="true">2</span>
         <div class="drop-actions">
           <button type="button" class="btn btn-primary" onClick={pasteFromClipboard}>Paste rows from your spreadsheet</button>
           <label class="btn btn-secondary">
@@ -397,12 +401,39 @@ export default function Workbook() {
           </div>
         )}
         <p class="drop-status" role="status" aria-live="polite">{message}</p>
-        <pre class="drop-example" aria-label="Example rows"><b>date  type  units  amount  fx_rate</b>{'\n'}{EXAMPLE}</pre>
+        <pre class="drop-example" aria-label="Example rows"><b>date{'       '}type{'      '}units{'   '}amount<span class="ex-fx">{'   '}fx_rate</span></b>{EXAMPLE.map((r, i) => <span key={i}>{'\n' + r.slice(0, 4).join(' ')}<span class="ex-fx">{'  ' + r[4]}</span></span>)}</pre>
         <p class="drop-note">
           Columns: date, type (buy, reinvest, redeem), units, amount in the fund's currency, then the rate to USD on that day.
           {' '}<a href={withBase('/templates/pfic-lots-template.csv')} download>Download the CSV template</a>. Rows stay in this browser.
         </p>
       </div>
+
+      <div class="fields fields-more">
+        <div class="field">
+          <label class="label" for="fund-isin">ISIN (optional)</label>
+          <input id="fund-isin" class="input" value={isin} onInput={(e) => patch({ isin: e.currentTarget.value })} />
+        </div>
+        <div class="field">
+          <label class="label" for="us-date">In the US since</label>
+          <input id="us-date" class="input num" inputMode="numeric" placeholder="YYYY-MM-DD" maxLength={10} autocomplete="off" aria-invalid={usDateBad} value={usText} onInput={(e) => onUsDate(e.currentTarget.value)} />
+        </div>
+        {regime === 'mtm' && (
+          <div class="field">
+            <label class="label" for="elect-year">First election year</label>
+            <select id="elect-year" class="input" value={electYear} onChange={(e) => setElectYear(e.currentTarget.value)}>
+              <option value="">From my first lot</option>
+              {[2022, 2023, 2024, 2025, 2026].filter((y) => y <= taxYear).map((y) => <option key={y} value={String(y)}>{y} (late election, §1296(j))</option>)}
+            </select>
+          </div>
+        )}
+        <div class="field narrow-only">
+          <label class="label" for="filing-status">Filing status</label>
+          <select id="filing-status" class="input" value={status} onChange={(e) => setStatus(e.currentTarget.value)}>
+            {STATUSES.map((s) => <option key={s}>{s}</option>)}
+          </select>
+        </div>
+      </div>
+      {usDateBad && <p class="pencil-note">Write the date as YYYY-MM-DD, for example 2019-08-15. It is ignored until it reads correctly.</p>}
 
       <h2 style="margin-top: calc(var(--row) * 1.5);">Lots</h2>
       {!hasRows ? (
@@ -489,7 +520,17 @@ export default function Workbook() {
       )}
       <p class="drop-status" role="status" aria-live="polite">{payMsg}</p>
       <div aria-live="polite">
-        {unlocked && outcome.kind === 'empty' && <p class="muted">Add lots above and the Form 8621 lines appear here.</p>}
+        {unlocked && outcome.kind === 'empty' && (
+          <div class="results-empty">
+            <img src={withBase('/art/spot-3.svg')} alt="" width="160" height="120" loading="lazy" />
+            <div class="results-preview" aria-label="Preview of the Part V lines, filled in once you add lots">
+              <p class="muted">Add lots above and these lines fill in.</p>
+              {['15a', '15b', '15c', '15d', '15e', '15f', '16a', '16b', '16c', '16d', '16e', '16f'].map((ln) => (
+                <div key={ln} class="results-line has-ln ghost"><span class="ln" aria-hidden="true">{ln}</span><span class="figure">—</span></div>
+              ))}
+            </div>
+          </div>
+        )}
         {unlocked && outcome.kind === 'error' && (
           <div>
             <p class="pencil-note">Fix {outcome.errors.length === 1 ? 'this row' : 'these rows'} first. Nothing is calculated until every row reads cleanly.</p>
