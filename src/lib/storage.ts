@@ -8,6 +8,8 @@ export interface WorkbookState {
   version: number;
   settings: Settings;
   funds: FundInput[];
+  /** Purchased license code (see license.ts). Verified in the browser before it unlocks anything. */
+  license?: string;
 }
 
 export const defaultState = (): WorkbookState => ({
@@ -74,6 +76,7 @@ export function importWorkbook(text: string): WorkbookState {
     version: SCHEMA_VERSION,
     settings: { taxYear, filingStatus: str(s.filingStatus, 'Single'), usPersonDate: str(s.usPersonDate) || undefined },
     funds: funds.length > 0 ? funds : [blankFund()],
+    ...(str(o.license) ? { license: str(o.license) } : {}),
   };
 }
 

@@ -4,6 +4,10 @@ import { parseLots, type ParseError } from '../lib/import/parse-lots';
 import { blankFund, blankRow, evaluate, lotToRow, yearsNeeded, rowsToLots, type FundInput, type LotRow } from '../lib/workbook';
 import { defaultState, exportWorkbook, importWorkbook, loadState, saveState, type WorkbookState } from '../lib/storage';
 import type { Regime } from '../lib/engine/types';
+import { verifyLicense, LICENSE_KEY, type LicensePayload } from '../lib/license';
+import { isFundUnlocked } from '../lib/paywall';
+
+const PUBLIC_KEY = (import.meta.env.PUBLIC_LICENSE_PUBLIC_KEY as string | undefined) ?? '';
 
 const DISCLAIMER = 'Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.';
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'INR', 'CHF', 'CAD', 'AUD', 'JPY', 'SGD'];
@@ -35,18 +39,52 @@ export default function Workbook() {
   const [fileMsg, setFileMsg] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const openRef = useRef<HTMLInputElement>(null);
+  const [licensePayload, setLicensePayload] = useState<LicensePayload | null>(null);
+  const [licenseInput, setLicenseInput] = useState('');
+  const [payMsg, setPayMsg] = useState('');
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     try {
       const s = loadState(localStorage);
-      if (s) setState(s);
+      const stored = localStorage.getItem(LICENSE_KEY) ?? undefined;
+      if (s) setState(stored && !s.license ? { ...s, license: stored } : s);
+      else if (stored) setState((x) => ({ ...x, license: stored }));
     } catch {
       /* storage blocked: work without autosave */
     }
     setLoaded(true);
   }, []);
   useEffect(() => {
+    let live = true;
+    if (!state.license || !PUBLIC_KEY) setLicensePayload(null);
+    else verifyLicense(state.license, PUBLIC_KEY).then((p) => live && setLicensePayload(p));
+    return () => {
+      live = false;
+    };
+  }, [state.license]);
+  useEffect(() => {
+    // Returning from Stripe Checkout: swap the session id for a signed license code.
+    const sid = new URLSearchParams(location.search).get('session_id');
+    if (!sid) return;
+    fetch(withBase(`/api/license?session_id=${encodeURIComponent(sid)}`))
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('not ok'))))
+      .then(async (d: { license?: string }) => {
+        if (d.license && (await verifyLicense(d.license, PUBLIC_KEY))) {
+          setState((s) => ({ ...s, license: d.license }));
+          setPayMsg('Payment received. Your license is active in this browser.');
+          history.replaceState(null, '', location.pathname);
+        } else setPayMsg('We could not read the license from your payment. Write to us with your receipt and we will send the code.');
+      })
+      .catch(() => setPayMsg('We could not confirm your payment yet. Reload this page in a minute.'));
+  }, []);
+  useEffect(() => {
     if (!loaded) return;
+    try {
+      if (state.license) localStorage.setItem(LICENSE_KEY, state.license);
+    } catch {
+      /* ignore */
+    }
     try {
       saveState(state, localStorage);
     } catch {
@@ -60,6 +98,7 @@ export default function Workbook() {
   const status = state.settings.filingStatus;
   const usDate = state.settings.usPersonDate ?? '';
   const { name, isin, currency, regime, rows, yearEnds } = fund;
+  const unlocked = isFundUnlocked(idx, licensePayload, taxYear);
   const patch = (p: Partial<FundInput>) => setState((s) => ({ ...s, funds: s.funds.map((f, i) => (i === idx ? { ...f, ...p } : f)) }));
   const setSettings = (p: Partial<WorkbookState['settings']>) => setState((s) => ({ ...s, settings: { ...s.settings, ...p } }));
   const setTaxYear = (y: 2025 | 2026) => setSettings({ taxYear: y });
@@ -74,6 +113,31 @@ export default function Workbook() {
   const electYear = fund.mtmElectionYear ? String(fund.mtmElectionYear) : '';
   const setElectYear = (v: string) => patch({ mtmElectionYear: v ? Number(v) : undefined });
 
+  async function buy() {
+    setPaying(true);
+    setPayMsg('');
+    try {
+      const r = await fetch(withBase('/api/checkout'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ taxYear }) });
+      const d = (await r.json()) as { url?: string };
+      if (r.ok && d.url) {
+        location.href = d.url;
+        return;
+      }
+      setPayMsg('Payments are not available on this preview.');
+    } catch {
+      setPayMsg('Payments are not available on this preview.');
+    }
+    setPaying(false);
+  }
+  async function activate() {
+    const p = PUBLIC_KEY ? await verifyLicense(licenseInput, PUBLIC_KEY) : null;
+    if (p && p.taxYear === taxYear) {
+      setState((s) => ({ ...s, license: licenseInput.trim() }));
+      setLicenseInput('');
+      setPayMsg(`License accepted for tax year ${p.taxYear}.`);
+    } else if (p) setPayMsg(`This license is for tax year ${p.taxYear}, not ${taxYear}. Change the tax year above or buy ${taxYear}.`);
+    else setPayMsg('This code is not a valid license. Paste it exactly as it was sent, with the dot in the middle.');
+  }
   function addFund() {
     setState((s) => ({ ...s, funds: [...s.funds, blankFund()] }));
     setActive(state.funds.length);
@@ -348,9 +412,31 @@ export default function Workbook() {
       </div>
 
       <h2 style="margin-top: calc(var(--row) * 1.5);">Results{name ? `: ${name}` : ''}</h2>
+      {!unlocked && (
+        <div class="locked" style="margin-top: var(--half);">
+          <img src={withBase('/art/spot-bundle.svg')} alt="" width="144" height="144" />
+          <div>
+            <h3 style="margin-top: 0;">Fund {idx + 1} needs the {taxYear} license</h3>
+            <p class="price">USD 55 <small>for tax year {taxYear}, all funds on one return</small></p>
+            <p>Your first fund is free in full. The license unlocks results and PDF for every further fund of tax year {taxYear}.</p>
+            <p class="caption">
+              PFIC Pro's calculator covers 5 funds for USD 485 (<a href="https://expattaxtools.com/pfic-pro-calculator/" rel="noopener">expattaxtools.com</a>). Refund on request within 14 days.
+            </p>
+            <button type="button" class="btn-primary" onClick={buy} disabled={paying}>Pay USD 55 and unlock {taxYear}</button>
+            <div style="margin-top: var(--half);">
+              <label class="label" for="license-code">Already bought? Paste your license code</label>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <input id="license-code" class="input" style="flex: 1 1 14rem;" value={licenseInput} onInput={(e) => setLicenseInput(e.currentTarget.value)} autocomplete="off" spellcheck={false} />
+                <button type="button" class="btn-secondary" onClick={activate} disabled={!licenseInput.trim()}>Use code</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <p class="drop-status" role="status" aria-live="polite">{payMsg}</p>
       <div aria-live="polite">
-        {outcome.kind === 'empty' && <p class="muted">Add lots above and the Form 8621 lines appear here.</p>}
-        {outcome.kind === 'error' && (
+        {unlocked && outcome.kind === 'empty' && <p class="muted">Add lots above and the Form 8621 lines appear here.</p>}
+        {unlocked && outcome.kind === 'error' && (
           <div>
             <p class="pencil-note">Fix {outcome.errors.length === 1 ? 'this row' : 'these rows'} first. Nothing is calculated until every row reads cleanly.</p>
             <ul class="flag-list">
@@ -358,7 +444,7 @@ export default function Workbook() {
             </ul>
           </div>
         )}
-        {outcome.kind === 'done' && (
+        {unlocked && outcome.kind === 'done' && (
           <div>
             {outcome.result.blocked && <p class="pencil-note">{outcome.result.blocked}</p>}
             {outcome.result.part1 && (
