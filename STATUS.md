@@ -1,6 +1,6 @@
 # PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot
 
-**Stage:** qa · **Platform:** web · **Score:** 3.3/5 · **Spend:** $10.99
+**Stage:** building · **Platform:** web · **Score:** 3.3/5 · **Spend:** $11.41
 
 For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.
 
@@ -89,3 +89,4 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - 2026-11-16 02:48 · building · build started
 - 2026-11-16 04:07 · seo · all planned tasks done
 - 2026-11-16 04:14 · qa · seo and conversion foundations written
+- 2026-11-16 04:20 · building · visual review round 1: clarity 3, ease 2, average 2.8
