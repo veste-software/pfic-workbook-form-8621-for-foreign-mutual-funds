@@ -1,6 +1,6 @@
 # PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot
 
-**Stage:** qa · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.33
+**Stage:** parked · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.54
 
 For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.
 
@@ -8,6 +8,7 @@ For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-c
 
 ## Needs you
 
+- [ ] Parked: QA still failing after 3 rounds: The 2017 interest limit is not stated where the buyer decides to pay. Add 'Interest on line 16f is available for holding periods that start in 2017 or later. Earlier holdings are blocked, not estimated.' to /pricing, to the locked panel and as a .pencil-note near the paste area, and add a claims te…. Fix it, then `npm run studio -- unpark pfic-workbook-form-8621-for-foreign-mutual-funds`, or `npm run studio -- kill pfic-workbook-form-8621-for-foreign-mutual-funds`
 - [ ] [task 1] Create a Stripe account, a USD 55 one-off Price, and set STRIPE_SECRET_KEY and STRIPE_PRICE_ID in Cloudflare Pages (test first, live later)
 - [ ] [task 2] Generate an Ed25519 key pair and set the private key as LICENSE_SIGNING_KEY in Cloudflare; commit only the public key
 - [ ] [task 3] Register a domain, connect Cloudflare Pages, add Google Search Console and submit the sitemap
@@ -49,6 +50,11 @@ For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-c
 - [ ] [task 39] Verify src/data/top-rates.json against IRC §1
 - [ ] [task 40] Decide on the Astro major upgrade (7.4.12) to clear npm audit findings
 - [ ] [task 41] Blocked: [QA round 1] IRS underpayment rates 2003-Q1 to 2016-Q4 (Needs IRS revenue rulings with irs.gov URLs; no web access, and rates must not be written from memory.)
+- [ ] [task 42] Place the official IRS Form 8621 (Rev. December 2025) at public/forms/f8621.pdf if the filled PDF should ship, so the Builder can run npm run pdf:fields and build the filler
+- [ ] [task 43] Supply the quarterly IRS underpayment rates for 2003-Q1 to 2016-Q4 with an irs.gov source URL per quarter
+- [ ] [task 44] Verify src/data/top-rates.json against IRC section 1 and the exceptions wording on /do-i-need-to-file-form-8621
+- [ ] [task 45] Decide on the Astro major upgrade (astro@7.4.12) to clear the audit findings
+- [ ] [task 46] Add Stripe test keys and the license signing key as environment variables on Cloudflare Pages and run one test-mode checkout
 
 ## Recommendation
 
@@ -97,7 +103,6 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 
 ## History
 
-- 2026-11-16 02:21 · planned · scaffold and plan written
 - 2026-11-16 02:48 · building · build started
 - 2026-11-16 04:07 · seo · all planned tasks done
 - 2026-11-16 04:14 · qa · seo and conversion foundations written
@@ -109,3 +114,4 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - 2026-11-16 04:53 · qa · all planned tasks done
 - 2026-11-16 04:59 · building · QA round 2 found 2 blocker(s)
 - 2026-11-16 05:05 · qa · all planned tasks done
+- 2026-11-16 05:11 · parked · QA still failing after 3 rounds: The 2017 interest limit is not stated where the buyer decides to pay. Add 'Interest on line 16f is available for holding periods that start in 2017 or later. Earlier holdings are blocked, not estimated.' to /pricing, to the locked panel and as a .pencil-note near the paste area, and add a claims te…
