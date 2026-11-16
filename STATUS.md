@@ -1,6 +1,6 @@
 # PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot
 
-**Stage:** building · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.02
+**Stage:** qa · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.08
 
 For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.
 
@@ -41,6 +41,8 @@ For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-c
 - [ ] [task 31] Generate an Ed25519 key pair; set LICENSE_SIGNING_KEY (private) in Cloudflare env and PUBLIC_LICENSE_PUBLIC_KEY (public) at build time. Without the public key no license can be activated.
 - [ ] [task 32] Set SITE_URL to the real domain in Cloudflare Pages, register the domain and submit the sitemap in Search Console.
 - [ ] [task 33] Decide EU VAT handling (Stripe Tax or OSS) for EU buyers.
+- [ ] [task 34] Blocked: [QA round 1] Implement filled Form 8621 PDF output (public/forms/f8621.pdf is missing and I have no web access. Without it the AcroForm field names are unknown. Operator must place the official IRS Form 8621 PDF (Rev. December 2025) at public/forms/f8621.pdf.)
+- [ ] [task 35] Blocked: [QA round 1] Extend irs-underpayment-rates.json back to 2003-Q1 (The 2003-Q1 to 2016-Q4 rates must come from the IRS revenue rulings, each with its irs.gov URL, and I have no web access. The operator must supply the figures and sources.)
 
 ## Recommendation
 
@@ -100,3 +102,4 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - 2026-11-16 04:34 · building · visual review round 2: clarity 3, ease 3, average 3
 - 2026-11-16 04:41 · qa · all planned tasks done
 - 2026-11-16 04:48 · building · QA round 1 found 2 blocker(s)
+- 2026-11-16 04:53 · qa · all planned tasks done
