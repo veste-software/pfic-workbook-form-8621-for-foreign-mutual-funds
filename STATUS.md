@@ -1,6 +1,6 @@
 # PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot
 
-**Stage:** qa · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.08
+**Stage:** building · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.24
 
 For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.
 
@@ -43,6 +43,11 @@ For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-c
 - [ ] [task 33] Decide EU VAT handling (Stripe Tax or OSS) for EU buyers.
 - [ ] [task 34] Blocked: [QA round 1] Implement filled Form 8621 PDF output (public/forms/f8621.pdf is missing and I have no web access. Without it the AcroForm field names are unknown. Operator must place the official IRS Form 8621 PDF (Rev. December 2025) at public/forms/f8621.pdf.)
 - [ ] [task 35] Blocked: [QA round 1] Extend irs-underpayment-rates.json back to 2003-Q1 (The 2003-Q1 to 2016-Q4 rates must come from the IRS revenue rulings, each with its irs.gov URL, and I have no web access. The operator must supply the figures and sources.)
+- [ ] [task 36] Place the official IRS Form 8621 (Rev. December 2025) at public/forms/f8621.pdf
+- [ ] [task 37] Supply the quarterly IRS underpayment rates for 2003-Q1 to 2016-Q4 with the irs.gov revenue ruling URL for each quarter
+- [ ] [task 38] Supply the i8621 (12/2025) Exceptions wording for src/content/i8621-exceptions.md
+- [ ] [task 39] Verify src/data/top-rates.json against IRC §1
+- [ ] [task 40] Decide on the Astro major upgrade (7.4.12) to clear npm audit findings
 
 ## Recommendation
 
@@ -91,7 +96,6 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 
 ## History
 
-- 2026-11-16 01:56 · scouted · ranked first in the daily pool (aggregate 3.65 of 5 by 3 independent rankers); the studio builds the day's best candidate whatever its score, and the prototype is how it is judged
 - 2026-11-16 02:09 · specced · spec written
 - 2026-11-16 02:21 · planned · scaffold and plan written
 - 2026-11-16 02:48 · building · build started
@@ -103,3 +107,4 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - 2026-11-16 04:41 · qa · all planned tasks done
 - 2026-11-16 04:48 · building · QA round 1 found 2 blocker(s)
 - 2026-11-16 04:53 · qa · all planned tasks done
+- 2026-11-16 04:59 · building · QA round 2 found 2 blocker(s)
