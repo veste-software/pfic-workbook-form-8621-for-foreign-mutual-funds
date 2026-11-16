@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro';
+import LegalText from '../components/LegalText.astro';
+---
+<Base title="Impressum (legal notice) | PFIC Workbook" description="Legal notice (Impressum) for PFIC Workbook: who publishes this site and how to reach them.">
+  <h1 style="margin-top: var(--row);">Impressum</h1>
+  <LegalText match={/impressum|imprint|legal-notice/i} />
+</Base>

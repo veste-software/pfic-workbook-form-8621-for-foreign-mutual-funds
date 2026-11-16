@@ -1,0 +1,23 @@
+---
+// Renders the owner's legal texts from src/content/legal/*.html unchanged (installed by the studio).
+// English files first, then German. Never edit these texts.
+interface Props {
+  match: RegExp;
+}
+const { match } = Astro.props;
+
+const files = import.meta.glob('../content/legal/*.html', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const entries = Object.entries(files)
+  .filter(([path]) => match.test(path.split('/').pop() ?? ''))
+  .map(([path, html]) => {
+    const name = path.split('/').pop() ?? '';
+    const lang = /(?:^|[._-])en(?:[._-]|$)/i.test(name) ? 'en' : /(?:^|[._-])de(?:[._-]|$)/i.test(name) ? 'de' : undefined;
+    return { name, html, lang };
+  })
+  .sort((a, b) => (a.lang === 'en' ? -1 : b.lang === 'en' ? 1 : a.name.localeCompare(b.name)));
+---
+{entries.map((e) => (
+  <section class="legal" lang={e.lang} style="margin-top: var(--row);">
+    <Fragment set:html={e.html} />
+  </section>
+))}

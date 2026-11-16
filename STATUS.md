@@ -55,6 +55,11 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - Fewer than 30 paid unlocks in total by 2027-10-31: kill
 - Two confirmed calculation errors in one season: take paid unlock offline until reviewed
 
+## Links
+
+- Repo: https://github.com/veste-software/pfic-workbook-form-8621-for-foreign-mutual-funds
+- Preview (GitHub Pages, builds from main): https://veste-software.github.io/pfic-workbook-form-8621-for-foreign-mutual-funds/
+
 ## History
 
 - 2026-11-16 01:56 · scouted · ranked first in the daily pool (aggregate 3.65 of 5 by 3 independent rankers); the studio builds the day's best candidate whatever its score, and the prototype is how it is judged

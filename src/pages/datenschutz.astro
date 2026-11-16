@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro';
+import LegalText from '../components/LegalText.astro';
+---
+<Base title="Privacy policy (Datenschutz) | PFIC Workbook" description="Privacy policy for PFIC Workbook. Your lots and fund figures stay in your browser and are never sent to a server.">
+  <h1 style="margin-top: var(--row);">Privacy policy</h1>
+  <LegalText match={/datenschutz|privacy/i} />
+</Base>

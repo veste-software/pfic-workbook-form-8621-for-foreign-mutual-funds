@@ -16,3 +16,6 @@ coverage/
 # Real search data the studio drops in for the Growth role; never published
 growth/data/
 .DS_Store
+# Cloudflare Pages Functions local state and secrets
+.wrangler/
+.dev.vars

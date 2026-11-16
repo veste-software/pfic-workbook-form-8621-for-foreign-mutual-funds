@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+---
+<Base title="Page not found | PFIC Workbook" description="This page is not in the workbook. Go back to the Form 8621 workbook.">
+  <section style="padding-top: var(--row); position: relative;">
+    <span class="ln" aria-hidden="true">404</span>
+    <h1>This line is blank.</h1>
+    <p class="pencil-note" style="display:inline-block; margin-top: var(--half);">No page at this address. Check the link, or start again from the workbook.</p>
+    <p style="margin-top: var(--row);"><a class="btn btn-primary" href={withBase('/')}>Open the workbook</a></p>
+  </section>
+</Base>

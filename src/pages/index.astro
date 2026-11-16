@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="PFIC calculator for Form 8621, lot by lot | PFIC Workbook"
+  description="Enter every SIP or ETF purchase once. Your browser works out the per-lot §1291 or mark-to-market figures and fills the official IRS Form 8621 for each fund."
+>
+  <section style="padding-top: var(--row); position: relative;">
+    <h1>Fill Form 8621 for every fund,<br />lot by lot.</h1>
+    <p style="margin-top: var(--half); font-size: 1.25rem;">
+      Paste your purchase lots and year-end values. You get the Part IV or Part V figures for each
+      lot and the official IRS form, filled. Nothing leaves this browser.
+    </p>
+  </section>
+
+  <section id="workbook" aria-label="Workbook" style="margin-top: var(--row); position: relative;">
+    <!-- Scaffold: the Builder replaces this static ledger with the Preact workbook island (PLAN.md task 3). -->
+    <table class="ledger">
+      <caption class="caption" style="caption-side: bottom; text-align: left; padding-top: 0.5rem;">
+        One row per purchase, dividend reinvestment or redemption, in the fund's currency.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Type</th>
+          <th scope="col" class="num">Units</th>
+          <th scope="col" class="num">Amount</th>
+          <th scope="col" class="num">FX to USD</th>
+          <th scope="col" class="num">USD</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="6"><em>No lots yet. Paste them from your spreadsheet or add the first one.</em></td></tr>
+      </tbody>
+    </table>
+  </section>
+</Base>
