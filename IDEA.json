@@ -1,0 +1,96 @@
+{
+  "title": "PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot",
+  "pitch": "For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.",
+  "platform": "web",
+  "language": "en",
+  "targetQueries": [
+    "pfic calculator",
+    "form 8621 calculator",
+    "pfic excess distribution calculator",
+    "pfic tax calculator excel",
+    "form 8621 indian mutual funds",
+    "form 8621 mark to market"
+  ],
+  "evidence": [
+    {
+      "url": "https://getbelong.com/blog/mutual-funds/report-indian-mutual-funds-on-us-tax-return/",
+      "note": "NRI guide: cross-border CPAs charge USD 500-2,000 per fund for these calculations, most retail tax software does not support Form 8621, one form per fund",
+      "date": "2026-03-09"
+    },
+    {
+      "url": "https://www.richify.ai/us/tools/form-8621-calculator",
+      "note": "Free calculator: single lot, section 1291 only, no mark-to-market, no QEF, no filled PDF; last reviewed 10 Nov 2026",
+      "date": "2026-11-10"
+    },
+    {
+      "url": "https://suggestqueries.google.com/complete/search?client=firefox&hl=en&q=pfic%20calculator",
+      "note": "10 suggestions incl. 'free pfic calculator', 'pfic tax calculator excel', '8621 pfic calculator', 'pfic excess distribution calculator'",
+      "date": "2026-11-15"
+    },
+    {
+      "url": "https://suggestqueries.google.com/complete/search?client=firefox&hl=en&q=form%208621",
+      "note": "10 suggestions incl. 'form 8621 instructions 2025', 'form 8621 filing threshold', 'form 8621 pfic'",
+      "date": "2026-11-15"
+    }
+  ],
+  "competitors": [
+    {
+      "name": "Richify Form 8621 calculator",
+      "url": "https://www.richify.ai/us/tools/form-8621-calculator",
+      "verdict": "partial",
+      "gap": "one lot, 1291 only, no mark-to-market, no form output"
+    },
+    {
+      "name": "taxbracketcalc PFIC tax calculator",
+      "url": "https://taxbracketcalc.com/capital-gains/pfic-tax-calculator/",
+      "verdict": "partial",
+      "gap": "estimate comparing regimes; seen in search only, no form output stated"
+    },
+    {
+      "name": "Form 8621 Calculator (G2 listing)",
+      "url": "https://www.g2.com/products/form-8621-calculator/pricing",
+      "verdict": "solid",
+      "gap": "price on request, aimed at preparers; not opened, features not verified"
+    },
+    {
+      "name": "TaxesForExpats PFIC filing",
+      "url": "https://www.taxesforexpats.com/services/pfic-filing.html",
+      "verdict": "partial",
+      "gap": "a CPA service at USD 200 for the first form and 150 for each extra, not self-serve"
+    }
+  ],
+  "trigger": {
+    "what": "standing need (Form 8621 is due with every US return, next deadline 2027-04-15)",
+    "date": "",
+    "url": ""
+  },
+  "window": "A standing gap: retail software does not do Form 8621 (Belong, March 2026), and the free calculators handle only one lot and no PDF. It stays open because the rules are hard and the payers are scattered over many countries. Seasonal: it must be live before February 2027 to catch the filing season.",
+  "monetizationIdea": "US filers with foreign funds pay 49 EUR per tax year (up to five funds, 10 EUR per extra fund) to get filled 8621 PDFs instead of paying a CPA 200 USD or more per form.",
+  "money": {
+    "payer": "a US green-card holder, H-1B worker or US expat who holds two to ten foreign mutual funds or ETFs and files their own return",
+    "buys": "correct per-lot 1291 or mark-to-market figures and one filled Form 8621 per fund, without paying a CPA 200-2,000 USD per fund; TurboTax and retail software do not produce the form",
+    "model": "one-off",
+    "price": "49 EUR per tax year (up to 5 funds), 10 EUR per extra fund",
+    "priceEur": 49,
+    "billing": "year",
+    "proof": [
+      {
+        "url": "https://www.taxesforexpats.com/services/pfic-filing.html",
+        "note": "Form 8621 priced at USD 200 for one and USD 150 for each additional; page shows no date, footer (c) 2026, seen 2026-11-15",
+        "date": "2026-11-15"
+      },
+      {
+        "url": "https://getbelong.com/blog/mutual-funds/report-indian-mutual-funds-on-us-tax-return/",
+        "note": "CPAs charge USD 500-2,000 per fund; USD 1,000-3,000 a year for a typical Indian MF portfolio",
+        "date": "2026-03-09"
+      }
+    ],
+    "nobodyPaysIf": "Filers worry about getting it wrong (whether mark-to-market applies to Indian funds is disputed) and either pay a CPA anyway, or sell the funds and simply skip the form."
+  },
+  "risks": [
+    "Liability perception for tax figures",
+    "IRS form revisions each year need updating"
+  ],
+  "edge": "Checked against Richify (opened): it handles only one lot, applies only 1291 and gives no PDF. This tool would do per-share lots, mark-to-market and filled forms in the browser with no upload, and preload year-end NAVs for Indian mutual funds from AMFI's open data. Form 8621 Calculator was not open…",
+  "demandNote": "No forum request dated inside 90 days could be opened (Reddit and Bogleheads were not reachable). Demand signs: 10 autocomplete variants each for 'pfic calculator' and 'form 8621' (2026-11-15), several 2026 NRI guides (Belong, March 2026), and Richify keeping its free calculator updated in November…"
+}
