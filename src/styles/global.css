@@ -35,6 +35,28 @@
 .results-preview > p { grid-column: 1 / -1; margin: 0; }
 .results-line.ghost { opacity: 0.45; }
 .results-line.ghost .figure { color: var(--ink-soft); }
+/* Visual round 2 */
+.narrow-inline { display: none; }
+.file-actions { margin-left: auto; display: inline-flex; gap: 0 var(--half); }
+.fund-tabs { align-self: stretch; }
+.fund-tabs-row { width: 100%; }
+.qef-note { margin: 0; line-height: var(--row); }
+.sheet-h { margin: var(--row) 0 0; line-height: var(--row); }
+.pad-sheet h3 { line-height: var(--row); }
+.pad-sheet .muted, .pad-sheet .empty-state p { margin: 0; }
+.empty-state, .locked { margin-top: 0; }
+.ex-row { display: block; }
+.details-label { grid-column: 1 / -1; margin-bottom: calc(var(--quarter) * -1); }
+.fields-more > .ln { top: 0.15rem; }
+.input.left::placeholder, .input.left { text-align: left; }
+.results-lead { display: flex; align-items: center; gap: var(--gutter); min-height: calc(var(--row) * 3); }
+.results-lead img { width: 96px; height: auto; flex: none; }
+.results-empty { grid-template-columns: 1fr; }
+.results-preview { margin-top: var(--row); }
+.results-line .ln { text-transform: none; }
+.file-end { margin-top: var(--row); }
+.file-end-row { display: flex; gap: 0 var(--half); flex-wrap: wrap; }
+.steps img { outline: 0; background: var(--tint); padding: var(--half); box-sizing: border-box; }
 @media (max-width: 52rem) {
   .fields { grid-template-columns: 2fr 1fr; }
   .fields > .field:nth-of-type(3) { grid-column: 1 / -1; }
@@ -43,10 +65,18 @@
 @media (max-width: 40rem) {
   .wide-only { display: none !important; }
   .narrow-only { display: flex; }
+  .narrow-inline { display: inline; }
+  .fields { grid-template-columns: 1fr 1fr; }
+  .fields > .field:nth-of-type(3) { grid-column: auto; }
   .fields-more { grid-template-columns: 1fr; }
+  .choice span { padding-left: 0.4rem; padding-right: 0.4rem; font-size: 0.8125rem; }
   .ex-fx { display: none; }
-  .results-empty { grid-template-columns: 1fr; }
-  .results-empty img { max-width: 8rem; }
+  .drop-example { white-space: normal; font-size: 0.8125rem; overflow-x: visible; }
+  .drop-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--quarter); }
+  .drop-actions .btn-primary { grid-column: 1 / -1; }
+  .drop-actions .btn, .drop-actions .btn-quiet { width: 100%; justify-content: center; padding: 0 0.5rem; }
+  .drop { padding-top: var(--half); padding-bottom: var(--half); min-height: 0; gap: var(--quarter); }
+  .qef-note { line-height: 1.5; }
   .masthead { flex-wrap: nowrap; min-height: 56px; gap: 0 1rem; }
   .masthead nav { display: flex; gap: 0 1rem; margin-left: auto; }
   .brand { font-size: 1.0625rem; margin-right: 0; white-space: nowrap; }

@@ -291,6 +291,16 @@ export default function Workbook() {
   const hasRows = rows.length > 0;
   const dropClass = `drop${drop === 'over' ? ' is-over' : drop === 'done' ? ' is-done' : drop === 'error' ? ' is-error' : ''}`;
 
+  const fileActions = (
+    <>
+      <button type="button" class="btn-quiet" onClick={exportFile}>Save workbook file</button>
+      <label class="btn-quiet" style="cursor:pointer;">
+        Open workbook file
+        <input ref={openRef} class="visually-hidden" type="file" accept=".json,application/json" onChange={(e) => { void openFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; }} />
+      </label>
+    </>
+  );
+
   return (
     <div class="pad-sheet" id="workbook">
       <div class="pad-band">
@@ -307,7 +317,7 @@ export default function Workbook() {
             {STATUSES.map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
-        <span class="push wide-only">Form 8621, one per fund</span>
+        <span class="push wide-only" role="status" aria-live="polite">{fileMsg || 'Saved automatically in this browser'}</span>
       </div>
 
       <div class="fund-tabs" role="group" aria-label="Funds">
@@ -321,6 +331,7 @@ export default function Workbook() {
           {state.funds.length > 1 && !confirmDelete && (
             <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(true)}>Delete this fund</button>
           )}
+          <span class="file-actions wide-only">{fileActions}</span>
         </div>
         {confirmDelete && (
           <span role="alertdialog" aria-label="Confirm delete">
@@ -329,14 +340,6 @@ export default function Workbook() {
             <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(false)}>Keep it</button>
           </span>
         )}
-        <div class="fund-tabs-row">
-          <button type="button" class="btn-quiet" onClick={exportFile}>Save workbook file</button>
-          <label class="btn-quiet" style="cursor:pointer;">
-            Open workbook file
-            <input ref={openRef} class="visually-hidden" type="file" accept=".json,application/json" onChange={(e) => { void openFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; }} />
-          </label>
-        </div>
-        <span class="caption" role="status" aria-live="polite">{fileMsg || 'Saved automatically in this browser.'}</span>
       </div>
 
       <div class="fields has-ln">
@@ -369,7 +372,7 @@ export default function Workbook() {
           </div>
         </div>
       </div>
-      <p class="caption" style="margin-top: var(--quarter);">QEF is not supported in this version. See a preparer.</p>
+      <p class="caption qef-note"><span class="wide-only">QEF is not supported in this version. See a preparer.</span><span class="narrow-inline">QEF: not supported, see a preparer.</span></p>
 
       <div
         class={`${dropClass} has-ln`}
@@ -380,7 +383,7 @@ export default function Workbook() {
       >
         <span class="ln" aria-hidden="true">2</span>
         <div class="drop-actions">
-          <button type="button" class="btn btn-primary" onClick={pasteFromClipboard}>Paste rows from your spreadsheet</button>
+          <button type="button" class="btn btn-primary" onClick={pasteFromClipboard}><span class="wide-only">Paste rows from your spreadsheet</span><span class="narrow-inline">Paste rows</span></button>
           <label class="btn btn-secondary">
             Choose CSV file
             <input class="visually-hidden" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain" onChange={(e) => void readFile(e.currentTarget.files?.[0])} />
@@ -401,21 +404,23 @@ export default function Workbook() {
           </div>
         )}
         <p class="drop-status" role="status" aria-live="polite">{message}</p>
-        <pre class="drop-example" aria-label="Example rows"><b>date{'       '}type{'      '}units{'   '}amount<span class="ex-fx">{'   '}fx_rate</span></b>{EXAMPLE.map((r, i) => <span key={i}>{'\n' + r.slice(0, 4).join(' ')}<span class="ex-fx">{'  ' + r[4]}</span></span>)}</pre>
+        <pre class="drop-example" aria-label="Example rows"><b class="ex-row">date{'       '}type{'      '}units{'   '}amount<span class="ex-fx">{'   '}fx_rate</span></b>{EXAMPLE.map((r, i) => <span key={i} class="ex-row">{r.slice(0, 4).join(' ')}<span class="ex-fx">{'  ' + r[4]}</span></span>)}</pre>
         <p class="drop-note">
           Columns: date, type (buy, reinvest, redeem), units, amount in the fund's currency, then the rate to USD on that day.
           {' '}<a href={withBase('/templates/pfic-lots-template.csv')} download>Download the CSV template</a>. Rows stay in this browser.
         </p>
       </div>
 
-      <div class="fields fields-more">
+      <div class="fields fields-more has-ln">
+        <span class="ln" aria-hidden="true">3</span>
+        <span class="label details-label">Fund details</span>
         <div class="field">
           <label class="label" for="fund-isin">ISIN (optional)</label>
           <input id="fund-isin" class="input" value={isin} onInput={(e) => patch({ isin: e.currentTarget.value })} />
         </div>
         <div class="field">
           <label class="label" for="us-date">In the US since</label>
-          <input id="us-date" class="input num" inputMode="numeric" placeholder="YYYY-MM-DD" maxLength={10} autocomplete="off" aria-invalid={usDateBad} value={usText} onInput={(e) => onUsDate(e.currentTarget.value)} />
+          <input id="us-date" class="input num left" inputMode="numeric" placeholder="YYYY-MM-DD" maxLength={10} autocomplete="off" aria-invalid={usDateBad} value={usText} onInput={(e) => onUsDate(e.currentTarget.value)} />
         </div>
         {regime === 'mtm' && (
           <div class="field">
@@ -435,9 +440,9 @@ export default function Workbook() {
       </div>
       {usDateBad && <p class="pencil-note">Write the date as YYYY-MM-DD, for example 2019-08-15. It is ignored until it reads correctly.</p>}
 
-      <h2 style="margin-top: calc(var(--row) * 1.5);">Lots</h2>
+      <h2 class="sheet-h">Lots</h2>
       {!hasRows ? (
-        <div class="empty-state" style="margin-top: var(--half);">
+        <div class="empty-state">
           <img src={withBase('/art/spot-empty.svg')} alt="" width="128" height="128" />
           <p class="muted">No lots yet. One row for every purchase, reinvested dividend and redemption of this fund.</p>
         </div>
@@ -476,8 +481,8 @@ export default function Workbook() {
         </div>
       )}
 
-      <h2 style="margin-top: calc(var(--row) * 1.5);">Year-end values</h2>
-      <p class="muted" style="margin-top: var(--quarter);">
+      <h2 class="sheet-h">Year-end values</h2>
+      <p class="muted">
         The fund's price per unit (NAV) on 31 December, in its own currency, and that day's rate to USD. Needed only if you still hold units at the end of {taxYear}.
       </p>
       <div class="table-wrap">
@@ -496,9 +501,9 @@ export default function Workbook() {
         </table>
       </div>
 
-      <h2 style="margin-top: calc(var(--row) * 1.5);">Results{name ? `: ${name}` : ''}</h2>
+      <h2 class="sheet-h">Results{name ? `: ${name}` : ''}</h2>
       {!unlocked && (
-        <div class="locked" style="margin-top: var(--half);">
+        <div class="locked">
           <img src={withBase('/art/spot-bundle.svg')} alt="" width="144" height="144" />
           <div>
             <h3 style="margin-top: 0;">Fund {idx + 1} needs the {taxYear} license</h3>
@@ -522,9 +527,11 @@ export default function Workbook() {
       <div aria-live="polite">
         {unlocked && outcome.kind === 'empty' && (
           <div class="results-empty">
-            <img src={withBase('/art/spot-3.svg')} alt="" width="160" height="120" loading="lazy" />
-            <div class="results-preview" aria-label="Preview of the Part V lines, filled in once you add lots">
+            <div class="results-lead">
+              <img src={withBase('/art/spot-3.svg')} alt="" width="96" height="72" loading="lazy" />
               <p class="muted">Add lots above and these lines fill in.</p>
+            </div>
+            <div class="results-preview" aria-label="Preview of the Part V lines, filled in once you add lots">
               {['15a', '15b', '15c', '15d', '15e', '15f', '16a', '16b', '16c', '16d', '16e', '16f'].map((ln) => (
                 <div key={ln} class="results-line has-ln ghost"><span class="ln" aria-hidden="true">{ln}</span><span class="figure">—</span></div>
               ))}
@@ -663,6 +670,10 @@ export default function Workbook() {
             <p class="disclaimer">{DISCLAIMER}</p>
           </div>
         )}
+      </div>
+      <div class="file-end narrow-only">
+        <div class="file-end-row">{fileActions}</div>
+        <p class="caption" role="status" aria-live="polite">{fileMsg || 'Saved automatically in this browser. First fund free.'}</p>
       </div>
     </div>
   );
