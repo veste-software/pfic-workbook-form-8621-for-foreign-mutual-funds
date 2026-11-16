@@ -31,6 +31,8 @@ export interface Fund {
   yearEnds: YearEnd[];
   /** Line 16d, foreign tax credit on the excess distribution. Default 0. */
   foreignTaxCredit?: number;
+  /** First year the mark-to-market election applies (Part II box). Later than the first lot year = late election, §1296(j). */
+  mtmElectionYear?: number;
 }
 
 export interface Flag {
@@ -60,7 +62,18 @@ export interface AllocationRow {
   priorYears: { year: number; amount: number; rate: number; tax: number; interest: number }[];
 }
 
+export interface ExcessResult {
+  l15a: number;
+  l15b: number;
+  l15c: number;
+  l15d: number;
+  l15e: number;
+  /** how many prior years went into the average */
+  priorYears: number;
+}
+
 export interface PartV {
+  excess?: ExcessResult;
   l15f: number;
   l16a: number;
   l16b: number;
@@ -107,4 +120,6 @@ export interface FundResult {
   part1?: { units: number; value: number };
   part4?: MtmResult;
   part5?: PartV;
+  /** Part II election box applies in this tax year (election year only). */
+  part2Election?: boolean;
 }

@@ -1,0 +1,18 @@
+---
+// One ledger line: margin line number, label, right-aligned mono figure, optional italic rule caption.
+interface Props {
+  ln: string;
+  label: string;
+  value: string;
+  note?: string;
+}
+const { ln, label, value, note } = Astro.props;
+---
+<div class="results-line has-ln">
+  <span class="ln" aria-hidden="true">{ln}</span>
+  <span>
+    {label}
+    {note && <span class="caption"> {note}</span>}
+  </span>
+  <span class="figure">{value}</span>
+</div>

@@ -42,8 +42,9 @@ export default function Workbook() {
   const [message, setMessage] = useState('');
   const pasteRef = useRef<HTMLTextAreaElement>(null);
 
-  const input = { name, currency, regime, rows, yearEnds, settings: { taxYear, filingStatus: status, usPersonDate: usDate || undefined } };
-  const outcome = useMemo(() => evaluate(input), [name, currency, regime, rows, yearEnds, taxYear, status, usDate]);
+  const [electYear, setElectYear] = useState('');
+  const input = { name, currency, regime, rows, yearEnds, mtmElectionYear: electYear ? Number(electYear) : undefined, settings: { taxYear, filingStatus: status, usPersonDate: usDate || undefined } };
+  const outcome = useMemo(() => evaluate(input), [name, currency, regime, rows, yearEnds, taxYear, status, usDate, electYear]);
   const years = useMemo(() => yearsNeeded(rowsToLots(rows, currency).lots, taxYear), [rows, currency, taxYear]);
 
   function importText(text: string) {
@@ -130,6 +131,15 @@ export default function Workbook() {
             </label>
           </div>
         </div>
+        {regime === 'mtm' && (
+          <div class="field">
+            <label class="label" for="elect-year">First year of the election</label>
+            <select id="elect-year" class="input" value={electYear} onChange={(e) => setElectYear(e.currentTarget.value)}>
+              <option value="">From my first lot</option>
+              {[2022, 2023, 2024, 2025, 2026].filter((y) => y <= taxYear).map((y) => <option key={y} value={String(y)}>{y} (late election, §1296(j))</option>)}
+            </select>
+          </div>
+        )}
         <div class="field">
           <label class="label" for="us-date">US taxpayer since (optional)</label>
           <input id="us-date" class="input" type="date" value={usDate} onInput={(e) => setUsDate(e.currentTarget.value)} />
@@ -254,10 +264,25 @@ export default function Workbook() {
                 <Line ln="Pt I" label="Value in USD" value={whole(outcome.result.part1.value)} note="year-end NAV times units times rate" />
               </section>
             )}
+            {outcome.result.part2Election && (
+              <section style="margin-top: var(--row);">
+                <h3>Part II: election</h3>
+                <p class="caption">Tick the mark-to-market election box on this form: {taxYear} is the election year.</p>
+              </section>
+            )}
             {outcome.result.part5 && (
               <section style="margin-top: var(--row);">
                 <h3>Part V: gain on disposition in {taxYear}, default method</h3>
                 <p class="caption">Form lines in whole dollars. The table below keeps the cents.</p>
+                {outcome.result.part5.excess && (
+                  <>
+                    <Line ln="15a" label="Distributions this year" value={whole(outcome.result.part5.excess.l15a)} />
+                    <Line ln="15b" label="Distributions, earlier years (up to 3)" value={whole(outcome.result.part5.excess.l15b)} />
+                    <Line ln="15c" label="Average of earlier years" value={whole(outcome.result.part5.excess.l15c)} />
+                    <Line ln="15d" label="125% of the average" value={whole(outcome.result.part5.excess.l15d)} />
+                    <Line ln="15e" label="Excess distribution" value={whole(outcome.result.part5.excess.l15e)} note="reinvested distributions count as distributions" />
+                  </>
+                )}
                 <Line ln="15f" label="Total gain on disposition" value={whole(outcome.result.part5.l15f)} />
                 <Line ln="16a" label="Gain allocated" value={whole(outcome.result.part5.l16a)} />
                 <Line ln="16b" label={`Amount for ${taxYear} (and pre-PFIC years)`} value={whole(outcome.result.part5.l16b)} />

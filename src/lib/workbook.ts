@@ -54,6 +54,7 @@ export interface WorkbookInput {
   regime: Regime;
   rows: LotRow[];
   yearEnds: Record<number, { nav: string; fx: string }>;
+  mtmElectionYear?: number;
   settings: Settings;
 }
 
@@ -70,6 +71,6 @@ export function evaluate(input: WorkbookInput): Outcome {
   const yearEnds = Object.entries(input.yearEnds)
     .map(([y, v]) => ({ year: +y, nav: Number(v.nav), fx: input.currency === 'USD' && v.fx === '' ? 1 : Number(v.fx) }))
     .filter((y) => Number.isFinite(y.nav) && Number.isFinite(y.fx));
-  const fund: Fund = { name: input.name, currency: input.currency, regime: input.regime, lots, yearEnds };
+  const fund: Fund = { name: input.name, currency: input.currency, regime: input.regime, lots, yearEnds, mtmElectionYear: input.mtmElectionYear };
   return { kind: 'done', result: computeFund(fund, input.settings) };
 }
