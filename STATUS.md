@@ -1,6 +1,6 @@
 # PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot
 
-**Stage:** qa · **Platform:** web · **Score:** 3.3/5 · **Spend:** $12.59
+**Stage:** building · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.02
 
 For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.
 
@@ -35,6 +35,12 @@ For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-c
 - [ ] [task 25] Set PUBLIC_ANALYTICS_SRC and PUBLIC_ANALYTICS_DOMAIN for cookie-free analytics, so the key-step events are recorded
 - [ ] [task 26] Make a 1200x630 PNG social preview image in the ledger style and add it as og:image
 - [ ] [task 27] Post in the communities and directories listed in growth/PLAN.md (Reddit, Bogleheads, AlternativeTo, Product Hunt) after reading each one's self-promotion rules
+- [ ] [task 28] Place the official IRS f8621.pdf (Rev. December 2025) from https://www.irs.gov/pub/irs-pdf/f8621.pdf at public/forms/f8621.pdf so the Builder can map fields and fill it.
+- [ ] [task 29] Supply the exact 'Exceptions' wording from the Form 8621 instructions (12/2025) as src/content/i8621-exceptions.md and verify src/data/top-rates.json against IRC §1.
+- [ ] [task 30] Create a Stripe account (test mode), a USD 55 one-off Price, and set STRIPE_SECRET_KEY and STRIPE_PRICE_ID in Cloudflare Pages env.
+- [ ] [task 31] Generate an Ed25519 key pair; set LICENSE_SIGNING_KEY (private) in Cloudflare env and PUBLIC_LICENSE_PUBLIC_KEY (public) at build time. Without the public key no license can be activated.
+- [ ] [task 32] Set SITE_URL to the real domain in Cloudflare Pages, register the domain and submit the sitemap in Search Console.
+- [ ] [task 33] Decide EU VAT handling (Stripe Tax or OSS) for EU buyers.
 
 ## Recommendation
 
@@ -93,3 +99,4 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - 2026-11-16 04:27 · qa · all planned tasks done
 - 2026-11-16 04:34 · building · visual review round 2: clarity 3, ease 3, average 3
 - 2026-11-16 04:41 · qa · all planned tasks done
+- 2026-11-16 04:48 · building · QA round 1 found 2 blocker(s)
