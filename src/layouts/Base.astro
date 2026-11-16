@@ -5,10 +5,25 @@ import { withBase } from '../lib/url';
 interface Props {
   title: string;
   description: string;
+  jsonLd?: Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, jsonLd = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const siteName = 'PFIC Workbook';
+const baseNoSlash = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
+const rel = Astro.url.pathname.startsWith(baseNoSlash) ? Astro.url.pathname.slice(baseNoSlash.length) : Astro.url.pathname;
+const isHome = rel === '' || rel === '/';
+const crumbName = title.split(' | ')[0];
+const breadcrumb = isHome ? [] : [{
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: siteName, item: new URL(baseNoSlash + '/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: crumbName, item: canonical.href },
+  ],
+}];
+const ldBlocks = [...jsonLd, ...breadcrumb];
 const analyticsSrc = import.meta.env.PUBLIC_ANALYTICS_SRC;
 const analyticsDomain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
 ---
@@ -20,6 +35,16 @@ const analyticsDomain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ldBlocks.map((b) => <script type="application/ld+json" set:html={JSON.stringify(b)} />)}
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
     <meta name="theme-color" content="#EEF2E6" />
@@ -47,6 +72,14 @@ const analyticsDomain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
     <footer class="sheet colophon">
       <hr class="double-rule" />
       <p class="caption">PFIC Workbook works out Form 8621 figures from the numbers you enter. Everything stays in your browser. This is not tax advice.</p>
+      <nav aria-label="Guides and tools">
+        <a href={withBase('/pfic-excess-distribution-calculator')}>Excess distribution calculator</a>
+        <a href={withBase('/form-8621-mark-to-market')}>Mark-to-market</a>
+        <a href={withBase('/form-8621-indian-mutual-funds-sip')}>Indian mutual funds</a>
+        <a href={withBase('/form-8621-ucits-etf')}>UCITS ETFs</a>
+        <a href={withBase('/do-i-need-to-file-form-8621')}>Do I need to file?</a>
+        <a href={withBase('/pfic-calculator-excel-template')}>CSV template</a>
+      </nav>
       <nav aria-label="Legal">
         <a href={withBase('/impressum')}>Impressum</a>
         <a href={withBase('/datenschutz')}>Privacy (Datenschutz)</a>

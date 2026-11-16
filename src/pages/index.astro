@@ -2,9 +2,20 @@
 import Base from '../layouts/Base.astro';
 import Workbook from '../components/Workbook';
 import { withBase } from '../lib/url';
+const jsonLd = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'PFIC Workbook',
+  description: 'Per-lot section 1291 and mark-to-market figures for IRS Form 8621, filled into the official PDF in the browser.',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Any (web browser)',
+  url: new URL(withBase('/'), Astro.site).href,
+  offers: { '@type': 'Offer', price: '55', priceCurrency: 'USD', description: 'One tax year, all funds. The first fund is free.' },
+}];
 ---
 <Base
-  title="PFIC calculator for Form 8621, lot by lot | PFIC Workbook"
+  jsonLd={jsonLd}
+  title="Form 8621 PFIC calculator, lot by lot | PFIC Workbook"
   description="Enter every SIP or ETF purchase once. Your browser works out the per-lot §1291 figures for Form 8621. Nothing leaves your device."
 >
   <section class="intro">
