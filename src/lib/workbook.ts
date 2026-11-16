@@ -48,13 +48,22 @@ export function yearsNeeded(lots: Lot[], taxYear: number): number[] {
   return out;
 }
 
-export interface WorkbookInput {
+/** One fund as the user edits it. */
+export interface FundInput {
   name: string;
+  /** ISIN or scheme code, for the user's own reference. */
+  isin: string;
   currency: string;
   regime: Regime;
   rows: LotRow[];
   yearEnds: Record<number, { nav: string; fx: string }>;
   mtmElectionYear?: number;
+}
+
+export const blankFund = (): FundInput => ({ name: '', isin: '', currency: 'USD', regime: '1291', rows: [], yearEnds: {} });
+
+export interface WorkbookInput extends Omit<FundInput, 'isin'> {
+  isin?: string;
   settings: Settings;
 }
 
@@ -67,6 +76,12 @@ export type Outcome =
 export function evaluate(input: WorkbookInput): Outcome {
   const { lots, errors } = rowsToLots(input.rows, input.currency);
   if (errors.length > 0) return { kind: 'error', errors };
+  if (input.regime === 'qef') {
+    return {
+      kind: 'done',
+      result: { flags: [{ id: 'qef', message: 'QEF is selected: not supported in this version. See a preparer for Part III.' }], blocked: 'QEF is not supported in this version.' },
+    };
+  }
   if (lots.length === 0) return { kind: 'empty' };
   const yearEnds = Object.entries(input.yearEnds)
     .map(([y, v]) => ({ year: +y, nav: Number(v.nav), fx: input.currency === 'USD' && v.fx === '' ? 1 : Number(v.fx) }))

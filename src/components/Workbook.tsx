@@ -1,7 +1,8 @@
-import { useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { withBase } from '../lib/url';
 import { parseLots, type ParseError } from '../lib/import/parse-lots';
-import { blankRow, evaluate, lotToRow, yearsNeeded, rowsToLots, type LotRow } from '../lib/workbook';
+import { blankFund, blankRow, evaluate, lotToRow, yearsNeeded, rowsToLots, type FundInput, type LotRow } from '../lib/workbook';
+import { defaultState, exportWorkbook, importWorkbook, loadState, saveState, type WorkbookState } from '../lib/storage';
 import type { Regime } from '../lib/engine/types';
 
 const DISCLAIMER = 'Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.';
@@ -28,23 +29,87 @@ function Line({ ln, label, value, note }: { ln: string; label: string; value: st
 }
 
 export default function Workbook() {
-  const [taxYear, setTaxYear] = useState<2025 | 2026>(2025);
-  const [status, setStatus] = useState(STATUSES[0]);
-  const [name, setName] = useState('');
-  const [currency, setCurrency] = useState('USD');
-  const [regime, setRegime] = useState<Regime>('1291');
-  const [usDate, setUsDate] = useState('');
-  const [rows, setRows] = useState<LotRow[]>([]);
-  const [yearEnds, setYearEnds] = useState<Record<number, { nav: string; fx: string }>>({});
+  const [state, setState] = useState<WorkbookState>(defaultState);
+  const [active, setActive] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [fileMsg, setFileMsg] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const openRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const s = loadState(localStorage);
+      if (s) setState(s);
+    } catch {
+      /* storage blocked: work without autosave */
+    }
+    setLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      saveState(state, localStorage);
+    } catch {
+      /* ignore */
+    }
+  }, [state, loaded]);
+
+  const idx = Math.min(active, state.funds.length - 1);
+  const fund = state.funds[idx];
+  const taxYear = state.settings.taxYear;
+  const status = state.settings.filingStatus;
+  const usDate = state.settings.usPersonDate ?? '';
+  const { name, isin, currency, regime, rows, yearEnds } = fund;
+  const patch = (p: Partial<FundInput>) => setState((s) => ({ ...s, funds: s.funds.map((f, i) => (i === idx ? { ...f, ...p } : f)) }));
+  const setSettings = (p: Partial<WorkbookState['settings']>) => setState((s) => ({ ...s, settings: { ...s.settings, ...p } }));
+  const setTaxYear = (y: 2025 | 2026) => setSettings({ taxYear: y });
+  const setStatus = (v: string) => setSettings({ filingStatus: v });
+  const setUsDate = (v: string) => setSettings({ usPersonDate: v || undefined });
+  const setName = (v: string) => patch({ name: v });
+  const setCurrency = (v: string) => patch({ currency: v });
+  const setRegime = (v: Regime) => patch({ regime: v });
+  const setRows = (fn: (r: LotRow[]) => LotRow[]) => setState((s) => ({ ...s, funds: s.funds.map((f, i) => (i === idx ? { ...f, rows: fn(f.rows) } : f)) }));
+  const setYearEnds = (fn: (m: FundInput['yearEnds']) => FundInput['yearEnds']) =>
+    setState((s) => ({ ...s, funds: s.funds.map((f, i) => (i === idx ? { ...f, yearEnds: fn(f.yearEnds) } : f)) }));
+  const electYear = fund.mtmElectionYear ? String(fund.mtmElectionYear) : '';
+  const setElectYear = (v: string) => patch({ mtmElectionYear: v ? Number(v) : undefined });
+
+  function addFund() {
+    setState((s) => ({ ...s, funds: [...s.funds, blankFund()] }));
+    setActive(state.funds.length);
+    setConfirmDelete(false);
+  }
+  function deleteFund() {
+    setState((s) => ({ ...s, funds: s.funds.length > 1 ? s.funds.filter((_, i) => i !== idx) : [blankFund()] }));
+    setActive(0);
+    setConfirmDelete(false);
+  }
+  function exportFile() {
+    const blob = new Blob([exportWorkbook(state)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `pfic-workbook-${taxYear}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setFileMsg('Workbook file saved to your downloads.');
+  }
+  async function openFile(file: File | undefined) {
+    if (!file) return;
+    try {
+      setState(importWorkbook(await file.text()));
+      setActive(0);
+      setFileMsg(`Opened ${file.name}.`);
+    } catch (e) {
+      setFileMsg((e as Error).message);
+    }
+  }
   const [paste, setPaste] = useState('');
   const [pasteOpen, setPasteOpen] = useState(false);
   const [drop, setDrop] = useState<'idle' | 'over' | 'done' | 'error'>('idle');
   const [message, setMessage] = useState('');
   const pasteRef = useRef<HTMLTextAreaElement>(null);
 
-  const [electYear, setElectYear] = useState('');
-  const input = { name, currency, regime, rows, yearEnds, mtmElectionYear: electYear ? Number(electYear) : undefined, settings: { taxYear, filingStatus: status, usPersonDate: usDate || undefined } };
-  const outcome = useMemo(() => evaluate(input), [name, currency, regime, rows, yearEnds, taxYear, status, usDate, electYear]);
+  const outcome = useMemo(() => evaluate({ ...fund, settings: state.settings }), [fund, state.settings]);
   const years = useMemo(() => yearsNeeded(rowsToLots(rows, currency).lots, taxYear), [rows, currency, taxYear]);
 
   function importText(text: string) {
@@ -107,16 +172,50 @@ export default function Workbook() {
         <span class="push">Form 8621, one per fund</span>
       </div>
 
+      <div class="fund-tabs" role="group" aria-label="Funds" style="display:flex;flex-wrap:wrap;gap:var(--quarter);align-items:center;margin-top:var(--half);">
+        {state.funds.map((f, i) => (
+          <button key={i} type="button" class={i === idx ? 'btn btn-primary' : 'btn btn-secondary'} aria-pressed={i === idx} onClick={() => { setActive(i); setConfirmDelete(false); }}>
+            {f.name || `Fund ${i + 1}`}
+          </button>
+        ))}
+        <button type="button" class="btn-quiet" onClick={addFund}>Add a fund</button>
+        {!confirmDelete ? (
+          <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(true)}>Delete this fund</button>
+        ) : (
+          <span role="alertdialog" aria-label="Confirm delete">
+            Delete {name || `Fund ${idx + 1}`} and its lots?{' '}
+            <button type="button" class="btn-quiet" onClick={deleteFund}>Yes, delete</button>{' '}
+            <button type="button" class="btn-quiet" onClick={() => setConfirmDelete(false)}>Keep it</button>
+          </span>
+        )}
+      </div>
+      <div class="drop-actions" style="margin-top: var(--quarter);">
+        <button type="button" class="btn-quiet" onClick={exportFile}>Save workbook file</button>
+        <label class="btn-quiet" style="cursor:pointer;">
+          Open workbook file
+          <input ref={openRef} class="visually-hidden" type="file" accept=".json,application/json" onChange={(e) => { void openFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; }} />
+        </label>
+        <span class="caption" role="status" aria-live="polite">{fileMsg || 'Saved automatically in this browser.'}</span>
+      </div>
+
       <div class="fields">
         <div class="field">
           <label class="label" for="fund-name">Fund name</label>
           <input id="fund-name" class="input" value={name} placeholder="Name as on your statement" onInput={(e) => setName(e.currentTarget.value)} />
         </div>
         <div class="field">
+          <label class="label" for="fund-isin">ISIN or scheme code (optional)</label>
+          <input id="fund-isin" class="input" value={isin} onInput={(e) => patch({ isin: e.currentTarget.value })} />
+        </div>
+        <div class="field">
           <label class="label" for="fund-ccy">Currency</label>
-          <select id="fund-ccy" class="input" value={currency} onChange={(e) => setCurrency(e.currentTarget.value)}>
+          <select id="fund-ccy" class="input" value={CURRENCIES.includes(currency) ? currency : 'other'} onChange={(e) => setCurrency(e.currentTarget.value === 'other' ? '' : e.currentTarget.value)}>
             {CURRENCIES.map((c) => <option key={c}>{c}</option>)}
+            <option value="other">Other…</option>
           </select>
+          {!CURRENCIES.includes(currency) && (
+            <input class="input" aria-label="Currency code" placeholder="3-letter code, e.g. SEK" maxLength={3} value={currency} onInput={(e) => setCurrency(e.currentTarget.value.toUpperCase())} />
+          )}
         </div>
         <div class="field">
           <span class="label" id="regime-label">Tax treatment</span>
@@ -129,7 +228,12 @@ export default function Workbook() {
               <input type="radio" name="regime" checked={regime === 'mtm'} onChange={() => setRegime('mtm')} />
               <span>Mark-to-market</span>
             </label>
+            <label>
+              <input type="radio" name="regime" checked={regime === 'qef'} disabled />
+              <span>QEF</span>
+            </label>
           </div>
+          <p class="caption">QEF is not supported in this version. See a preparer.</p>
         </div>
         {regime === 'mtm' && (
           <div class="field">
