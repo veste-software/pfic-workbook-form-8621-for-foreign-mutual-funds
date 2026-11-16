@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+  <title>A ruler measures one lot's holding period and splits its gain by day across the years</title>
+  <!-- the ruler -->
+  <rect x="48" y="84" width="400" height="44" fill="#C9D6BE"/>
+  <rect x="40" y="76" width="400" height="44" fill="#D8C38D" stroke="#2B2F2C" stroke-width="2.5"/>
+  <path d="M59 120V110M76 120V110M93 120V110M110 120V110M127 120V110M161 120V110M178 120V110M195 120V110M229 120V110M246 120V110M263 120V110M297 120V110M314 120V110M331 120V110M365 120V110M382 120V110M399 120V110M416 120V110" stroke="#2B2F2C" stroke-width="2"/>
+  <path d="M144 120V98M212 120V98M280 120V98M348 120V98" stroke="#2B2F2C" stroke-width="2.5"/>
+  <g fill="#2B2F2C">
+    <rect x="107.5" y="86" width="18" height="4"/><rect x="169" y="86" width="18" height="4"/><rect x="237" y="86" width="18" height="4"/><rect x="305" y="86" width="18" height="4"/><rect x="362" y="86" width="18" height="4"/>
+  </g>
+
+  <!-- start and end of the holding period -->
+  <polygon points="89,125 83,135 95,135" fill="#2B2F2C"/>
+  <polygon points="391,125 385,135 397,135" fill="#2B2F2C"/>
+
+  <!-- the gain, cut by year: prior years in ledger green, the current year in manila -->
+  <g stroke="#2B2F2C" stroke-width="2.5">
+    <rect x="89" y="146" width="52" height="24" fill="#2F5D46"/>
+    <rect x="147" y="146" width="62" height="24" fill="#2F5D46"/>
+    <rect x="215" y="146" width="62" height="24" fill="#2F5D46"/>
+    <rect x="283" y="146" width="62" height="24" fill="#2F5D46"/>
+    <rect x="351" y="146" width="40" height="24" fill="#D8C38D"/>
+  </g>
+
+  <!-- the ledger row: one cell per year -->
+  <g fill="#2F5D46">
+    <rect x="105.5" y="194" width="22" height="5"/><rect x="167" y="194" width="22" height="5"/><rect x="235" y="194" width="22" height="5"/><rect x="303" y="194" width="22" height="5"/><rect x="360" y="194" width="22" height="5"/>
+  </g>
+  <rect x="349" y="211.5" width="42" height="39.5" fill="#D8C38D"/>
+  <path d="M89 252H391M144 210V252M212 210V252M280 210V252M348 210V252" stroke="#A9C2A4" stroke-width="2"/>
+  <path d="M89 210H391" stroke="#2B2F2C" stroke-width="2.5"/>
+  <g fill="#2B2F2C">
+    <rect x="108" y="228" width="30" height="6"/><rect x="166" y="228" width="40" height="6"/><rect x="234" y="228" width="40" height="6"/><rect x="302" y="228" width="40" height="6"/>
+  </g>
+  <rect x="363" y="228" width="22" height="6" fill="#2F5D46"/>
+
+  <!-- deferred tax total (16c) closed with the red double rule; current year to 16b -->
+  <rect x="48" y="266" width="26" height="6" fill="#2F5D46"/>
+  <rect x="282" y="265" width="60" height="7" fill="#2B2F2C"/>
+  <path d="M89 282H348M89 288H348" stroke="#B3261E" stroke-width="2.5"/>
+  <rect x="359" y="266" width="26" height="6" fill="#2F5D46"/>
+</svg>

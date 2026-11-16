@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+  <title>A filled Form 8621, checked, going into a manila folder</title>
+  <!-- folder back with tab -->
+  <rect x="82" y="122" width="336" height="208" fill="#C9D6BE"/>
+  <path d="M72 114V92H176L194 114Z" fill="#D8C38D" stroke="#2B2F2C" stroke-width="2.5" stroke-linejoin="miter"/>
+  <rect x="72" y="112" width="336" height="208" fill="#D8C38D" stroke="#2B2F2C" stroke-width="2.5"/>
+
+  <!-- the filled form -->
+  <g transform="rotate(-4 240 170)">
+    <rect x="148" y="52" width="200" height="250" fill="#C9D6BE"/>
+    <rect x="140" y="44" width="200" height="250" fill="#F7F8F0" stroke="#2B2F2C" stroke-width="2.5"/>
+    <g fill="none" stroke="#2B2F2C" stroke-width="2.5" stroke-linecap="square">
+      <circle cx="155" cy="62.5" r="4.5"/>
+      <circle cx="155" cy="73" r="5.5"/>
+      <circle cx="168" cy="73" r="5.5"/>
+      <path d="M162.6 73Q163 59 172 58.5"/>
+      <path d="M176.5 62C176.5 58.5 186 57.5 186 62.5C186 67 176.5 73 176.5 78.5H186"/>
+      <path d="M190.5 61.5L194.5 58V78.5M190.5 78.5H198.5"/>
+    </g>
+    <path d="M206 44V94" stroke="#2B2F2C" stroke-width="2"/>
+    <rect x="216" y="54" width="70" height="6" fill="#2B2F2C"/>
+    <rect x="216" y="67" width="62" height="4" fill="#A9C2A4"/>
+    <rect x="216" y="77" width="50" height="4" fill="#A9C2A4"/>
+    <rect x="140" y="92" width="200" height="4" fill="#2B2F2C"/>
+    <rect x="140" y="106" width="40" height="13" fill="#2B2F2C"/>
+    <rect x="148" y="110.5" width="24" height="4" fill="#F7F8F0"/>
+    <rect x="188" y="110" width="90" height="5" fill="#2B2F2C"/>
+    <path d="M140 119H340" stroke="#2B2F2C" stroke-width="2"/>
+    <path d="M140 141H280M140 163H280M140 185H280M140 207H280" stroke="#A9C2A4" stroke-width="2"/>
+    <path d="M280 119V229M280 141H340M280 163H340M280 185H340M280 207H340" stroke="#2B2F2C" stroke-width="2"/>
+    <g fill="#2F5D46">
+      <rect x="148" y="128" width="14" height="5"/><rect x="148" y="150" width="14" height="5"/><rect x="148" y="172" width="14" height="5"/><rect x="148" y="194" width="14" height="5"/>
+    </g>
+    <g fill="#A9C2A4">
+      <rect x="168" y="128.5" width="80" height="4"/><rect x="168" y="150.5" width="64" height="4"/><rect x="168" y="172.5" width="90" height="4"/><rect x="168" y="194.5" width="70" height="4"/>
+    </g>
+    <g fill="#2B2F2C">
+      <rect x="298" y="127" width="36" height="6"/><rect x="306" y="149" width="28" height="6"/><rect x="294" y="171" width="40" height="6"/><rect x="302" y="193" width="32" height="6"/>
+    </g>
+    <path d="M298 66L306 74L324 52" fill="none" stroke="#B3261E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- folder front with its label -->
+  <polygon points="64,190 416,190 408,322 72,322" fill="#D8C38D" stroke="#2B2F2C" stroke-width="2.5" stroke-linejoin="miter"/>
+  <rect x="196" y="226" width="88" height="40" fill="#F7F8F0" stroke="#2B2F2C" stroke-width="2.5"/>
+  <path d="M222 236V255M214 248L222 256L230 248" fill="none" stroke="#2F5D46" stroke-width="2.5"/>
+  <rect x="242" y="238" width="30" height="5" fill="#2B2F2C"/>
+  <rect x="242" y="250" width="22" height="4" fill="#A9C2A4"/>
+</svg>

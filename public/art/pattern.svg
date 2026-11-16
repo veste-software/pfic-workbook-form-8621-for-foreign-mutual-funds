@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 32" width="96" height="32">
+  <!-- Columnar analysis-paper ruling: one ruled row, two thin column rules, one double rule. Tiles seamlessly. -->
+  <rect x="0" y="31" width="96" height="1" fill="#A9C2A4"/>
+  <rect x="31" y="0" width="1" height="32" fill="#A9C2A4"/>
+  <rect x="63" y="0" width="1" height="32" fill="#A9C2A4"/>
+  <rect x="91" y="0" width="1" height="32" fill="#A9C2A4"/>
+  <rect x="94" y="0" width="1" height="32" fill="#A9C2A4"/>
+</svg>

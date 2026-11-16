@@ -1,0 +1,544 @@
+/* PFIC Workbook brand kit. Tokens, self-hosted fonts and base styles. See DESIGN.md.
+   Flat colours only. Depth comes from hard offset blocks and rules, never from blur. */
+
+@import "@fontsource/source-serif-4/400.css";
+@import "@fontsource/source-serif-4/400-italic.css";
+@import "@fontsource/source-serif-4/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+:root {
+  /* Palette */
+  --paper: #eef2e6;        /* ledger paper: the page, the dominant surface */
+  --sheet: #f7f8f0;        /* pad sheet: the raised workbook sheet */
+  --ink: #2b2f2c;          /* graphite: text and outlines */
+  --ink-soft: #4a524c;     /* secondary text */
+  --ledger: #2f5d46;       /* ledger green: the accent */
+  --ledger-dark: #1f3f30;
+  --pencil: #b3261e;       /* red pencil: the signal */
+  --rule: #a9c2a4;         /* ruling green: lines only */
+  --manila: #d8c38d;       /* manila: art and the tax-year column band only */
+  --well: #dce6d2;         /* input wells */
+  --tint: #e2ead9;         /* row hover, locked panel */
+  --shade: #c9d6be;        /* flat shadows in the art */
+
+  /* Brand aliases */
+  --brand-surface: var(--paper);
+  --brand-ink: var(--ink);
+  --brand-accent: var(--ledger);
+  --brand-signal: var(--pencil);
+  --accent: var(--ledger);
+  --signal: var(--pencil);
+  --paper-deep: var(--well); /* scaffold name */
+
+  /* Type */
+  --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --mono: "IBM Plex Mono", "Courier New", monospace;
+  --fs-display: clamp(2.25rem, 3.4vw + 1rem, 3.5rem);
+  --fs-h2: clamp(1.5rem, 1.2vw + 1.1rem, 2rem);
+  --fs-h3: 1.25rem;
+  --fs-lede: 1.25rem;
+  --fs-body: 1.0625rem;
+  --fs-fig: 1rem;
+  --fs-label: 0.8125rem;
+  --fs-caption: 0.9375rem;
+  --fs-price: 2.5rem;
+
+  /* Space and grid */
+  --row: 2rem;
+  --half: 1rem;
+  --quarter: 0.5rem;
+  --margin: 4.5rem;
+  --sheet-margin: 3.5rem;
+  --gutter: 2rem;
+  --measure: 66ch;
+  --page-max: 72rem;
+  --control-h: 3rem;
+
+  /* Rules, radii, offsets */
+  --hair: 1px solid var(--rule);
+  --hair-ink: 1px solid var(--ink);
+  --radius: 0;
+  --offset: 8px;
+  --focus: 3px solid var(--ledger);
+
+  /* Drawn marks (inline SVG, flat) */
+  --svg-ruling: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='32'%3E%3Crect y='31' width='8' height='1' fill='%23A9C2A4'/%3E%3C/svg%3E");
+  --svg-margin: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='8'%3E%3Crect width='1' height='8' fill='%23A9C2A4'/%3E%3Crect x='3' width='1' height='8' fill='%23A9C2A4'/%3E%3C/svg%3E");
+  --svg-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5L7 7L12.5 1.5' fill='none' stroke='%232F5D46' stroke-width='2'/%3E%3C/svg%3E");
+  --svg-chevron-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5L7 7L12.5 1.5' fill='none' stroke='%23EEF2E6' stroke-width='2'/%3E%3C/svg%3E");
+  --svg-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='5'%3E%3Cpath d='M0 2.5Q6 0.5 12 2.5T24 2.5' fill='none' stroke='%23B3261E' stroke-width='1.3'/%3E%3C/svg%3E");
+  --svg-tick-red: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='16' viewBox='0 0 20 16'%3E%3Cpath d='M2 9L7.5 14L18 2' fill='none' stroke='%23B3261E' stroke-width='2.2'/%3E%3C/svg%3E");
+  --svg-tick-ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='16' viewBox='0 0 20 16'%3E%3Cpath d='M2 9L7.5 14L18 2' fill='none' stroke='%232F5D46' stroke-width='2.2'/%3E%3C/svg%3E");
+  --svg-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5L6.5 12L13 4' fill='none' stroke='%23F7F8F0' stroke-width='2.2'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 40rem) {
+  :root {
+    --margin: 2.5rem;
+    --sheet-margin: 2rem;
+    --offset: 5px;
+    --fs-lede: 1.125rem;
+  }
+}
+
+/* ---------- Base ---------- */
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body,
+body.pad {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  background-image: none; /* the page is a plain desk; ruling lives on .pad-sheet */
+  color: var(--ink);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-display); line-height: 1.06; letter-spacing: -0.015em; }
+h2 { font-size: var(--fs-h2); line-height: 1.15; letter-spacing: -0.005em; }
+h3 { font-size: var(--fs-h3); line-height: 1.3; }
+
+p { max-width: var(--measure); margin: 0 0 var(--half); }
+.lede { font-size: var(--fs-lede); line-height: 1.5; color: var(--ink); max-width: 40ch; }
+.muted { color: var(--ink-soft); }
+
+a {
+  color: var(--ledger);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--ledger-dark); text-decoration-thickness: 2px; }
+
+::selection { background: var(--rule); color: var(--ink); }
+
+:focus-visible { outline: var(--focus); outline-offset: 3px; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { left: 1rem; top: 1rem; z-index: 10; background: var(--sheet); padding: 0.5rem 1rem; outline: var(--focus); }
+
+/* Figures: typewriter face, tabular. */
+.fig, td.num, input, select, textarea, code, kbd, samp {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+code, samp { font-size: 0.9375em; }
+
+/* Labels, column heads, margin line numbers. */
+.label, .ln, th {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ledger);
+  line-height: 1.4;
+}
+.eyebrow { font-family: var(--mono); font-size: var(--fs-label); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ledger); margin: 0 0 var(--quarter); }
+
+.caption {
+  font-style: italic;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* ---------- Layout ---------- */
+
+.sheet {
+  box-sizing: border-box;
+  padding-left: var(--margin);
+  padding-right: clamp(1rem, 4vw, 3rem);
+  max-width: calc(var(--page-max) + var(--margin) + 3rem);
+}
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  min-height: 4rem;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-right: auto;
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.1875rem;
+  letter-spacing: -0.005em;
+}
+.brand:hover { color: var(--ink); }
+.brand img, .brand svg { width: 28px; height: 28px; flex: none; }
+.masthead nav a { font-family: var(--mono); font-size: var(--fs-label); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; min-height: 48px; display: inline-flex; align-items: center; }
+.masthead nav a:hover, .masthead nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+
+/* The first screen: text left, hero right; the pad sheet spans the full width below. */
+.intro {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: center;
+  padding-top: var(--half);
+}
+.intro-text { grid-column: 1 / span 7; }
+.intro-art { grid-column: 8 / span 5; margin: 0; }
+.intro-art img { display: block; width: 100%; height: auto; }
+.intro h1 { margin-bottom: var(--half); }
+@media (max-width: 52rem) {
+  .intro { display: block; }
+  .intro-art { display: none; }      /* shown again below the pad sheet: .art-after */
+}
+.art-after { display: none; margin: var(--row) 0 0; }
+.art-after img { width: 100%; height: auto; display: block; }
+@media (max-width: 52rem) { .art-after { display: block; } }
+
+.section { margin-top: calc(var(--row) * 2); }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--row) var(--gutter);
+  counter-reset: step;
+  padding: 0;
+  margin: var(--row) 0 0;
+  list-style: none;
+}
+.steps li { counter-increment: step; }
+.steps img { display: block; width: 100%; height: auto; margin-bottom: var(--half); background: var(--sheet); outline: var(--hair); }
+.steps h3::before {
+  content: "Step " counter(step);
+  display: block;
+  font-family: var(--mono); font-size: var(--fs-label); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ledger);
+  margin-bottom: 0.25rem;
+}
+@media (max-width: 52rem) { .steps { grid-template-columns: 1fr; } .steps img { max-width: 24rem; } }
+
+/* The ledger double rule that closes a section or a total. */
+.double-rule, hr.double-rule {
+  border: 0;
+  border-top: var(--hair);
+  border-bottom: var(--hair);
+  height: 3px;
+  margin: var(--row) 0;
+  background: transparent;
+}
+
+/* ---------- The signature: the pad sheet ---------- */
+
+.pad-sheet {
+  position: relative;
+  box-sizing: border-box;
+  background-color: var(--sheet);
+  background-image: var(--svg-margin), var(--svg-ruling);
+  background-repeat: repeat-y, repeat;
+  background-position: calc(var(--sheet-margin) - 8px) 0, 0 calc(2.5rem - 1px);
+  outline: var(--hair-ink);
+  box-shadow: var(--offset) var(--offset) 0 var(--ledger);
+  padding: 0 clamp(1rem, 3vw, 2rem) var(--row) var(--sheet-margin);
+  margin: var(--row) var(--offset) 0 0;
+}
+.pad-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  min-height: 2.5rem;
+  margin: 0 calc(clamp(1rem, 3vw, 2rem) * -1) var(--row) calc(var(--sheet-margin) * -1);
+  padding: 0.25rem clamp(1rem, 3vw, 2rem) 0.25rem var(--sheet-margin);
+  background: var(--ledger);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.pad-band label, .pad-band span { color: var(--paper); }
+.pad-band .push { margin-left: auto; }
+.pad-band select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 2rem;
+  padding: 0 1.75rem 0 0.5rem;
+  border: 0;
+  border-bottom: 1px solid var(--paper);
+  border-radius: var(--radius);
+  background: var(--ledger-dark) var(--svg-chevron-paper) no-repeat right 0.5rem center;
+  color: var(--paper);
+  font: 500 var(--fs-label) / 1 var(--mono);
+  letter-spacing: 0.06em;
+}
+
+/* Margin line numbers sit in the sheet's margin, beside their figure.
+   Outside the pad sheet they use the page margin instead. */
+main.sheet { --ln-gutter: var(--margin); }
+.pad-sheet { --ln-gutter: var(--sheet-margin); }
+.has-ln { position: relative; }
+.ln {
+  position: absolute;
+  left: calc(var(--ln-gutter, var(--sheet-margin)) * -1);
+  width: calc(var(--ln-gutter, var(--sheet-margin)) - 0.75rem);
+  text-align: right;
+  top: 0.15rem;
+}
+
+/* ---------- Controls ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--control-h);
+  padding: 0 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 1.2;
+  border: 1px solid var(--ledger);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.btn-primary { background: var(--ledger); color: var(--paper); }
+.btn-primary:hover { background: var(--ledger-dark); border-color: var(--ledger-dark); color: var(--paper); text-decoration: none; }
+.btn-primary:active { box-shadow: inset 0 0 0 2px var(--ledger-dark), inset 0 0 0 3px var(--paper); }
+.btn-secondary { background: var(--sheet); color: var(--ledger); }
+.btn-secondary:hover { background: var(--tint); color: var(--ledger-dark); text-decoration: none; }
+.btn-quiet {
+  display: inline-flex; align-items: center; min-height: var(--control-h);
+  padding: 0 0.25rem; border: 0; background: none; cursor: pointer;
+  font: 500 0.875rem / 1.2 var(--mono); letter-spacing: 0.04em;
+  color: var(--ledger); text-decoration: underline; text-underline-offset: 4px;
+}
+.btn[disabled], .btn[aria-disabled="true"] { background: var(--well); border-color: var(--rule); color: var(--ink-soft); cursor: not-allowed; }
+.btn-wide { width: 100%; }
+
+.field { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.field .label { color: var(--ink-soft); }
+.fields {
+  display: grid;
+  grid-template-columns: minmax(12rem, 2fr) minmax(8rem, 1fr) minmax(16rem, 2fr);
+  gap: var(--half) var(--gutter);
+  align-items: end;
+}
+@media (max-width: 52rem) { .fields { grid-template-columns: 1fr 1fr; } .fields > :first-child { grid-column: 1 / -1; } }
+@media (max-width: 26rem) { .fields { grid-template-columns: 1fr; } }
+
+.input, select.input, textarea.input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0 0.75rem;
+  font-family: var(--mono);
+  font-size: var(--fs-fig);
+  color: var(--ink);
+  background-color: var(--well);
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: var(--radius);
+}
+.input.num { text-align: right; }
+.input::placeholder { color: var(--ink-soft); opacity: 1; }
+.input:hover { border-bottom-color: var(--ledger); }
+.input[aria-invalid="true"] { border-bottom: 2px solid var(--pencil); }
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.25rem;
+  background-image: var(--svg-chevron);
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  cursor: pointer;
+}
+textarea.input { min-height: 8rem; padding: 0.75rem; line-height: 1.6; resize: vertical; }
+
+/* Segmented choice built from radios: <div class="choice"><label><input type="radio"><span>§1291</span></label>…</div> */
+.choice { display: flex; min-height: var(--control-h); outline: 1px solid var(--ledger); outline-offset: -1px; }
+.choice label { flex: 1 1 0; display: flex; }
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice span {
+  flex: 1; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 0.25rem 0.75rem; cursor: pointer;
+  font: 500 0.875rem / 1.2 var(--mono); letter-spacing: 0.02em;
+  color: var(--ledger); background: var(--sheet);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.choice label + label span { border-left: 1px solid var(--ledger); }
+.choice input:checked + span { background: var(--ledger); color: var(--paper); }
+.choice input:focus-visible + span { outline: var(--focus); outline-offset: 2px; }
+.choice input:disabled + span { color: var(--ink-soft); background: var(--well); cursor: not-allowed; }
+
+/* Square checkbox and radio in brand colours. */
+.check { display: inline-flex; align-items: center; gap: 0.625rem; min-height: var(--control-h); cursor: pointer; }
+.check input {
+  appearance: none; -webkit-appearance: none; margin: 0; flex: none;
+  width: 1.25rem; height: 1.25rem;
+  background: var(--sheet); border: 1px solid var(--ink); border-radius: var(--radius);
+  display: inline-grid; place-content: center; cursor: pointer;
+}
+.check input:checked { background: var(--ledger) var(--svg-check) no-repeat center / 1rem; border-color: var(--ledger); }
+.check input[type="radio"]:checked { background: var(--sheet); box-shadow: inset 0 0 0 4px var(--sheet), inset 0 0 0 10px var(--ledger); }
+
+/* ---------- The drop and paste area ---------- */
+
+.drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--half);
+  min-height: 12rem;
+  box-sizing: border-box;
+  padding: var(--row) clamp(1rem, 3vw, 2rem);
+  background: var(--sheet);
+  border: 1px dashed var(--ledger);
+  transition: background-color 150ms ease;
+}
+.drop-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--half); }
+.drop-example {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  overflow-x: auto;
+  white-space: pre;
+}
+.drop-example b { font-weight: 500; color: var(--ledger); }
+.drop.is-over { border: 2px solid var(--ledger); background: var(--tint); }
+.drop.is-working { border-style: solid; }
+.drop.is-done { border-style: solid; border-color: var(--ink); }
+.drop.is-error { border: 2px solid var(--pencil); }
+.drop-status {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-fig);
+  color: var(--ink);
+  padding-left: 1.75rem;
+  min-height: 1.5rem;
+}
+.drop.is-done .drop-status { background: var(--svg-tick-ink) no-repeat 0 0.2rem / 1.25rem; }
+.drop-note { margin: var(--half) 0 0; font-size: 0.9375rem; color: var(--ink-soft); }
+@media (max-width: 40rem) {
+  .drop-actions .btn-primary { width: 100%; }
+}
+
+/* ---------- Ledger tables ---------- */
+
+table.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-fig);
+}
+table.ledger th, table.ledger td {
+  border-bottom: var(--hair);
+  padding: 0.3rem 0.75rem;
+  height: var(--row);
+  text-align: left;
+  vertical-align: middle;
+}
+table.ledger td + td, table.ledger th + th { border-left: var(--hair); }
+table.ledger td.num, table.ledger th.num { text-align: right; }
+table.ledger tbody tr:hover { background: var(--tint); }
+table.ledger th.col-year { background: var(--manila); color: var(--ink); }
+table.ledger caption { caption-side: bottom; text-align: left; padding-top: var(--quarter); font-style: italic; font-size: var(--fs-caption); color: var(--ink-soft); }
+.table-wrap { overflow-x: auto; }
+
+/* A total: graphite double rule above; a checked total adds the red double rule below. */
+.total { border-top: 3px double var(--ink); font-weight: 500; }
+.total.checked { border-bottom: 3px double var(--pencil); }
+
+/* ---------- Notes ---------- */
+
+/* Red-pencil note: italic, red, a wavy pencil underline. No box, no side stripe. */
+.pencil-note {
+  font-style: italic;
+  color: var(--pencil);
+  padding-bottom: 5px;
+  background-image: var(--svg-wave);
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+p.pencil-note, div.pencil-note { display: inline-block; max-width: var(--measure); }
+.pencil-tick {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1rem;
+  background: var(--svg-tick-red) no-repeat center / contain;
+  vertical-align: -0.1em;
+}
+.has-ln > .pencil-tick { position: absolute; left: calc(var(--sheet-margin) * -1 + 0.5rem); top: 0.35rem; }
+
+.disclaimer { font-style: italic; font-size: var(--fs-caption); color: var(--ink-soft); }
+
+/* The locked (paywall) panel. */
+.locked {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: var(--half) var(--gutter);
+  align-items: start;
+  background: var(--tint);
+  outline: var(--hair);
+  padding: var(--row) clamp(1rem, 3vw, 2rem);
+}
+.locked img { width: 100%; height: auto; }
+.price { font-family: var(--mono); font-size: var(--fs-price); font-weight: 500; line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); font-variant-numeric: tabular-nums lining-nums; }
+.price small { font-size: 1rem; font-weight: 400; color: var(--ink-soft); letter-spacing: 0; }
+@media (max-width: 40rem) { .locked { grid-template-columns: 1fr; } .locked img { max-width: 8rem; } }
+
+/* ---------- Footer ---------- */
+
+.colophon { margin-top: calc(var(--row) * 3); padding-bottom: var(--row); }
+.colophon nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+.colophon nav a { font-family: var(--mono); font-size: var(--fs-label); letter-spacing: 0.1em; text-transform: uppercase; min-height: 48px; display: inline-flex; align-items: center; }
+
+/* ---------- Motion and print ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+@media print {
+  html, body, body.pad { background: #fff; }
+  .pad-sheet { box-shadow: none; background-image: none; outline: 0; }
+  .pad-band { background: none; color: var(--ink); border-bottom: 1px solid var(--ink); }
+  .no-print, .masthead nav, .drop { display: none !important; }
+  a { color: var(--ink); }
+}

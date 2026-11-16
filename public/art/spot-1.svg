@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+  <title>Rows copied from a fund statement are pasted onto the pad</title>
+  <!-- the fund statement, with the copied rows cut out -->
+  <g transform="rotate(-2 123 169)">
+    <rect x="50" y="50" width="170" height="262" fill="#C9D6BE"/>
+    <rect x="38" y="38" width="170" height="262" fill="#F7F8F0" stroke="#2B2F2C" stroke-width="2.5"/>
+    <rect x="54" y="56" width="66" height="8" fill="#2B2F2C"/>
+    <rect x="150" y="54" width="44" height="14" fill="#2F5D46"/>
+    <rect x="54" y="74" width="112" height="5" fill="#A9C2A4"/>
+    <rect x="54" y="84" width="88" height="5" fill="#A9C2A4"/>
+    <path d="M38 98H208" stroke="#2B2F2C" stroke-width="2"/>
+    <g fill="#2B2F2C">
+      <rect x="54" y="112" width="34" height="5"/><rect x="162" y="112" width="32" height="5"/>
+      <rect x="54" y="132" width="34" height="5"/><rect x="156" y="132" width="38" height="5"/>
+      <rect x="54" y="236" width="34" height="5"/><rect x="166" y="236" width="28" height="5"/>
+      <rect x="54" y="256" width="34" height="5"/><rect x="158" y="256" width="36" height="5"/>
+      <rect x="54" y="276" width="34" height="5"/><rect x="164" y="276" width="30" height="5"/>
+    </g>
+    <g fill="#A9C2A4">
+      <rect x="96" y="112" width="44" height="5"/><rect x="96" y="132" width="44" height="5"/>
+      <rect x="96" y="236" width="44" height="5"/><rect x="96" y="256" width="44" height="5"/><rect x="96" y="276" width="44" height="5"/>
+    </g>
+    <rect x="48" y="148" width="150" height="76" fill="#EEF2E6" stroke="#2F5D46" stroke-width="2" stroke-dasharray="5 4"/>
+  </g>
+
+  <!-- the pad: two rows already entered -->
+  <rect x="296" y="74" width="160" height="258" fill="#C9D6BE"/>
+  <rect x="282" y="60" width="160" height="258" fill="#D8C38D" stroke="#2B2F2C" stroke-width="2.5"/>
+  <rect x="282" y="60" width="160" height="252" fill="#F7F8F0" stroke="#2B2F2C" stroke-width="2.5"/>
+  <g stroke="#A9C2A4" stroke-width="2">
+    <path d="M284 114H440M284 138H440M284 162H440M284 186H440M284 210H440M284 234H440M284 258H440M284 282H440"/>
+    <path d="M306 90V310M311 90V310M384 90V310"/>
+  </g>
+  <rect x="282" y="60" width="160" height="30" fill="#2F5D46" stroke="#2B2F2C" stroke-width="2.5"/>
+  <g fill="#2B2F2C">
+    <rect x="320" y="99.5" width="34" height="5"/><rect x="398" y="99.5" width="32" height="5"/>
+    <rect x="320" y="123.5" width="34" height="5"/><rect x="404" y="123.5" width="26" height="5"/>
+  </g>
+
+  <!-- the copied strip of four rows, landing on the pad -->
+  <g transform="rotate(-6 260 194)">
+    <rect x="168" y="158" width="200" height="88" fill="#C9D6BE"/>
+    <rect x="160" y="150" width="200" height="88" fill="#D8C38D" stroke="#2B2F2C" stroke-width="2.5"/>
+    <path d="M161.5 172H358.5M161.5 194H358.5M161.5 216H358.5" stroke="#F7F8F0" stroke-width="2"/>
+    <g fill="#2B2F2C">
+      <rect x="172" y="158.5" width="34" height="5"/><rect x="316" y="158.5" width="32" height="5"/>
+      <rect x="172" y="180.5" width="34" height="5"/><rect x="310" y="180.5" width="38" height="5"/>
+      <rect x="172" y="202.5" width="34" height="5"/><rect x="320" y="202.5" width="28" height="5"/>
+      <rect x="172" y="224.5" width="34" height="5"/><rect x="312" y="224.5" width="36" height="5"/>
+    </g>
+    <g fill="#2F5D46">
+      <rect x="216" y="158.5" width="44" height="5"/><rect x="216" y="180.5" width="44" height="5"/>
+      <rect x="216" y="202.5" width="44" height="5"/><rect x="216" y="224.5" width="44" height="5"/>
+    </g>
+  </g>
+
+  <!-- the move -->
+  <path d="M218 130Q246 100 274 130" fill="none" stroke="#2F5D46" stroke-width="2.5"/>
+  <path d="M271.3 118.3L274 130L262.5 126.5" fill="none" stroke="#2F5D46" stroke-width="2.5"/>
+</svg>
