@@ -1,6 +1,6 @@
 # PFIC Workbook: Form 8621 for foreign mutual funds and ETFs, lot by lot
 
-**Stage:** building · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.24
+**Stage:** qa · **Platform:** web · **Score:** 3.3/5 · **Spend:** $13.33
 
 For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-card holders, UCITS ETFs of US expats). They enter each purchase lot and the yearly values, and the browser works out the default 1291 or mark-to-market figures per share and fills one IRS Form 8621 PDF per fund. If it takes off, it becomes the yearly filing tool with year-end prices already loaded for every Indian mutual fund (AMFI open data), shared in NRI communities.
 
@@ -48,6 +48,7 @@ For US taxpayers who hold foreign funds (Indian mutual funds of H-1B and green-c
 - [ ] [task 38] Supply the i8621 (12/2025) Exceptions wording for src/content/i8621-exceptions.md
 - [ ] [task 39] Verify src/data/top-rates.json against IRC §1
 - [ ] [task 40] Decide on the Astro major upgrade (7.4.12) to clear npm audit findings
+- [ ] [task 41] Blocked: [QA round 1] IRS underpayment rates 2003-Q1 to 2016-Q4 (Needs IRS revenue rulings with irs.gov URLs; no web access, and rates must not be written from memory.)
 
 ## Recommendation
 
@@ -96,7 +97,6 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 
 ## History
 
-- 2026-11-16 02:09 · specced · spec written
 - 2026-11-16 02:21 · planned · scaffold and plan written
 - 2026-11-16 02:48 · building · build started
 - 2026-11-16 04:07 · seo · all planned tasks done
@@ -108,3 +108,4 @@ one-off (USD 55 (about 49 EUR) per tax year, all funds on one return; first fund
 - 2026-11-16 04:48 · building · QA round 1 found 2 blocker(s)
 - 2026-11-16 04:53 · qa · all planned tasks done
 - 2026-11-16 04:59 · building · QA round 2 found 2 blocker(s)
+- 2026-11-16 05:05 · qa · all planned tasks done
