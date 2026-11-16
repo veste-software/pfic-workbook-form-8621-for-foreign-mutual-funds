@@ -72,3 +72,18 @@ The first eight tasks give a thin version that works end to end (one fund, §129
 
 - Task 14: statements use the standard Courier/Times fonts (no font embedding, keeps the lazy chunk small). The ZIP holds statements, per-lot CSV and a lines-to-type text file per fund; filled IRS forms join it once task 13 (public/forms/f8621.pdf) is possible. The statements chunk is ~180 kB gz but loads only on download; the workbook island is ~12 kB gz.
 - Tasks 26 and 27: events go through src/lib/analytics.ts (counts only). Enter in a lot row adds a row below, Delete on a Remove button asks to confirm. Small uppercase mono labels (13px) are a design choice and stay below 17px; body text and controls meet 17px and 48px.
+
+## Visual review round 1
+
+A designer who looked at the real pages said: It looks like a real accountant's pad and I get what it's for, but I have to scroll past a pile of fund settings before I can paste anything.
+
+- [ ] [Visual round 1] Put the drop area with 'Paste rows from your spreadsheet' above the fold at 1280x800 and 390x844. In src/components/Workbook.tsx, keep only Fund name, Currency and Tax treatment in one row above the drop area. Move 'ISIN or scheme code', 'US taxpayer since', 'Save workbook file' and 'Open workbook …
+- [ ] [Visual round 1] Clean up the fund tab row: hide 'Delete this fund' while only one fund exists. On phones, set 'Fund 1' and 'Add a fund' on one line and the two file links together on one line, instead of four separate ruled rows.
+- [ ] [Visual round 1] Replace the native date input for 'US taxpayer since' (it shows the browser's mm/dd/yyyy and calendar icon) with a brand mono text input with placeholder 'YYYY-MM-DD' and inputmode numeric, validated in code. Show a .pencil-note when the date is invalid.
+- [ ] [Visual round 1] Fix the tax treatment control: drop QEF as a third button, because it looks selectable but is unsupported, and keep only the italic note. Label the two options '§1291' and 'Mark-to-market', each on one line with white-space: nowrap. Today they break into 2 lines on desktop and 3 lines ('Mark- / to-…
+- [ ] [Visual round 1] Mobile header: METHOD and PRICING wrap onto a second line under the logo. Keep them on the logo's row, right-aligned, so the header is a single 56px row.
+- [ ] [Visual round 1] Mobile drop area: the example rows are clipped at the right edge ('fx_', '1000.('). Under 40rem, show only the date, type, units and amount columns, or put the sample in a pre with overflow-x: auto.
+- [ ] [Visual round 1] Mobile band: it is about 120px tall (tax year, filing status and 'Form 8621, one per fund' stacked). As DESIGN.md section 8 says, keep only Tax year in the band on phones, move Filing status into the sheet below the drop area, and hide the 'Form 8621, one per fund' label under 40rem.
+- [ ] [Visual round 1] Align content to the 32px ruling. Shorten the labels to 'ISIN (optional)' and 'In the US since' so every label in a row sits on one baseline and none wraps. Set prose inside .pad-sheet (Year-end values intro, Lots empty text, Results text) to line-height: var(--row) so the ruled lines stop running …
+- [ ] [Visual round 1] Add the price line once on the home page, below the steps: 'Your first fund is free, filled PDF included. All funds for tax year 2025: USD 55, once.' with a link to /pricing. Right now no price is visible anywhere on the page.
+- [ ] [Visual round 1] Fill the margin and design the Results empty state. Put mono margin numbers (.ln) '1' beside the fund fields and '2' beside the drop area, as DESIGN.md section 8 shows. Replace the bare 'Add lots above…' sentence with a small spot-3.svg and a faint preview of the Part V lines (15a–16f in the margin…
