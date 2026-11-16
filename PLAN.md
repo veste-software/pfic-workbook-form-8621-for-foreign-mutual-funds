@@ -102,3 +102,8 @@ A designer who looked at the real pages said: Looks like a careful accountant's 
 - [x] [Visual round 2] Replace the filler 'Form 8621, one per fund' on the right of the pad band with something useful: the save status from task 1 on desktop, or 'First fund free'.
 - [x] [Visual round 2] ISIN (optional) and 'In the US since' sit stranded under the drop area without a line number, and the date input's right-aligned placeholder floats in an empty well. Give this row margin line number 3 with a small 'Fund details' label, and left-align the YYYY-MM-DD placeholder.
 - [x] [Visual round 2] The three steps in 'What happens to your rows' sit in outlined boxes, which DESIGN.md section 5 rules out ('no cards except the pad sheet'). Remove the 1px box borders and let each spot illustration stand on the paper with its own shade block, aligned to the 12-column grid.
+
+## QA round 1
+
+- [ ] [QA round 1] Home page, pricing table and locked-fund panel promise a 'filled Form 8621 PDF', but PDF filling is not implemented: public/forms/f8621.pdf, src/lib/pdf/fill.ts, src/lib/f8621-fields.json, src/lib/fo… (src/pages/index.astro:9 and :59; src/pages/pricing.astro:29; src/components/Workbook.tsx:511; src/lib/pdf/)
+- [ ] [QA round 1] src/data/irs-underpayment-rates.json starts at 2017-Q1 (SPEC criterion 3 requires 2003-Q1); the 'first row is 2003-Q1' test is still it.todo. Any §1291 holding that started before 2017 is blocked at … (src/data/irs-underpayment-rates.json; tests/data/rates.test.ts)
