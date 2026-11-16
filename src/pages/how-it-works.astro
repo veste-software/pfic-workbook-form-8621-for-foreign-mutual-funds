@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+import rates from '../data/irs-underpayment-rates.json';
+import top from '../data/top-rates.json';
+
+const topRows = Object.entries(top.rates as Record<string, number>);
+const first = rates.rates[0].quarter;
+const last = rates.rates[rates.rates.length - 1].quarter;
+---
+<Base
+  title="How PFIC Workbook calculates Form 8621, rule by rule | PFIC Workbook"
+  description="Every rule behind the figures: lot matching, §1291 day allocation, top rates, daily-compounded IRS interest, mark-to-market and the late election, with sources."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Method</p>
+      <h1>Every rule the workbook applies, with its source.</h1>
+      <p class="lede">So you or your preparer can check each figure. Where the 12/2025 instructions and this page differ, the instructions win.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="usd-h">
+    <h2 id="usd-h">1. Money in US dollars</h2>
+    <p>Lot basis in USD is the cost times the exchange rate on the purchase date, or the USD amount you enter. Year-end value is units times NAV times the December 31 rate. Proceeds are the amount times the rate on the redemption date. You supply the rates; the workbook does not fetch any.</p>
+  </section>
+
+  <section class="section" aria-labelledby="fifo-h">
+    <h2 id="fifo-h">2. Matching sales to lots</h2>
+    <p>Sales use first in, first out, the order Indian fund houses use. A part-sold lot is split in proportion to its units, so basis and proceeds follow the units.</p>
+  </section>
+
+  <section class="section" aria-labelledby="s1291-h">
+    <h2 id="s1291-h">3. §1291 sale of a fund (Part V)</h2>
+    <p>Each matched lot's gain is proceeds minus basis. A gain is spread evenly by day over the holding period, the day after purchase through the day of sale (IRC §1291(a)(1)(A); i8621, 12/2025).</p>
+    <ul>
+      <li>Days in the current tax year, and days before the PFIC years if you choose that option through the US-person date, are ordinary income: line 16b.</li>
+      <li>Each earlier year's share is taxed at the highest individual rate for that year (§1291(c)(2), §1). The sum is line 16c.</li>
+      <li>Line 16d, the foreign tax credit, is yours to enter; it starts at 0. Line 16e is 16c minus 16d.</li>
+      <li>Line 16f is the interest charge (§1291(c)(3)), worked out as in section 4.</li>
+      <li>Losses are not allocated. They are listed on the statement. If a sale has both gains and losses, line 15f shows the sum of the gains and a red-pencil note asks you to check the line 15f instructions. Nothing is netted silently.</li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="int-h">
+    <h2 id="int-h">4. Interest, compounded daily</h2>
+    <p>For each earlier year t, interest runs from the unextended due date of the year t return (April 15 of the next year, moved to the next business day if it falls on a weekend) to the unextended due date of the current-year return. The rate is the §6621(a)(2) underpayment rate of each quarter, compounded daily (§6622), on a 365-day or 366-day year.</p>
+    <p>The quarterly table in the workbook runs from {first} to {last}. Each row names its IRS source. If a quarter is missing, the fund is flagged and not calculated; no quarter is ever treated as 0%. Full list on the IRS page <a href={rates.listPage}>quarterly interest rates</a>.</p>
+    <details>
+      <summary>Quarterly rates used ({rates.rates.length} quarters)</summary>
+      <div class="table-wrap">
+        <table class="ledger">
+          <thead><tr><th>Quarter</th><th class="num">Rate, %</th><th>Source</th></tr></thead>
+          <tbody>
+            {rates.rates.map((r) => (
+              <tr><td class="num">{r.quarter}</td><td class="num">{r.ratePct}</td><td><a href={r.source}>{r.source.replace('https://www.irs.gov/', '')}</a></td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <h3 style="margin-top: var(--row);">Highest individual rate by year</h3>
+    <div class="table-wrap">
+      <table class="ledger">
+        <thead><tr><th>Year</th><th class="num">Rate, %</th></tr></thead>
+        <tbody>
+          {topRows.map(([y, r]) => <tr><td class="num">{y}</td><td class="num">{+(r * 100).toFixed(1)}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Source: IRC §1. These rates are due for a second check by a person; see a preparer if your case depends on them.</p>
+  </section>
+
+  <section class="section" aria-labelledby="mtm-h">
+    <h2 id="mtm-h">5. Mark-to-market (Part IV)</h2>
+    <p>For each lot and each year from the election year on, gain is the year-end value minus the adjusted basis, and it is ordinary income (§1296(a)). A loss is allowed only up to that lot's unreversed inclusions (§1296(a)(2)). Basis goes up by gains included and down by losses allowed (§1296(b)). Lots bought during a year are marked at that year-end. On a sale, a gain is ordinary; a loss is ordinary up to unreversed inclusions, and the rest is a capital loss, shown apart. Form lines are the sums over lots. <a href={withBase('/form-8621-mark-to-market')}>Worked example</a>.</p>
+  </section>
+
+  <section class="section" aria-labelledby="late-h">
+    <h2 id="late-h">6. First mark-to-market year (§1296(j))</h2>
+    <p>In the election year, lots held before January 1 of that year are treated as sold at the year-end value under the §1291 rules of section 3 and reported in Part V. Their mark-to-market basis afterwards is that value. Lots bought in the election year are plain mark-to-market. The Part II box is ticked in the election year only.</p>
+  </section>
+
+  <section class="section" aria-labelledby="dist-h">
+    <h2 id="dist-h">7. Distributions</h2>
+    <p>Lines 15a to 15e compare this year's distributions with 125% of the average of the previous three years. A positive excess distribution is flagged as "allocation not supported in this version"; lines 16b to 16f are not computed for it. Reinvested dividends count as distributions; cash payouts that are not reinvested are not modelled.</p>
+  </section>
+
+  <section class="section" aria-labelledby="flags-h">
+    <h2 id="flags-h">8. What gets a red-pencil note</h2>
+    <ul>
+      <li>Mixed gain and loss lots in one sale under §1291.</li>
+      <li>A positive excess distribution.</li>
+      <li>A holding period that starts before 2003, the first year of the rate tables.</li>
+      <li>A US-person date inside a lot's holding period under mark-to-market. The special basis rule for new US persons is not applied.</li>
+      <li>A year-end NAV or exchange rate missing for a needed year. The fund's results are blocked and the message names the year.</li>
+      <li>QEF chosen as the regime: not supported; see a preparer.</li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="round-h">
+    <h2 id="round-h">9. Rounding</h2>
+    <p>All arithmetic runs in full precision. Whole dollars appear only where a form field is filled. Statements show cents.</p>
+    <p>The form is IRS Form 8621, Rev. December 2025, from <a href="https://www.irs.gov/pub/irs-pdf/f8621.pdf">irs.gov</a>, with instructions at <a href="https://www.irs.gov/pub/irs-pdf/i8621.pdf">i8621</a>.</p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>

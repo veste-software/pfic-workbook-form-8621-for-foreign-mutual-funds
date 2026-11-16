@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+---
+<Base
+  title="Pricing: USD 55 per tax year, all funds | PFIC Workbook"
+  description="The first fund is free in full. USD 55 for a tax year covers every fund on one return. One payment, no subscription, refund on request within 14 days."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Pricing</p>
+      <h1>One fund free. Then USD 55 a year for all of them.</h1>
+      <p class="lede">Pay once per tax year. Every fund on the return is covered, a married couple filing jointly included. It is not a subscription.</p>
+    </div>
+    <figure class="intro-art">
+      <img src={withBase('/art/spot-bundle.svg')} width="400" height="300" alt="A bundle of fund sheets tied together" />
+    </figure>
+  </section>
+
+  <section class="section" aria-labelledby="free-h">
+    <h2 id="free-h">What is free, what is paid</h2>
+    <div class="table-wrap">
+      <table class="ledger">
+        <thead><tr><th>Item</th><th>First fund</th><th>Tax year pass</th></tr></thead>
+        <tbody>
+          <tr><td>Lot entry, paste and CSV import</td><td>Free</td><td>Free</td></tr>
+          <tr><td>Per-lot §1291 and mark-to-market figures</td><td>Free</td><td>Every fund</td></tr>
+          <tr><td>Lines to type into your tax software</td><td>Free</td><td>Every fund</td></tr>
+          <tr><td>Filled Form 8621 PDF and line 16a statement</td><td>Free</td><td>Every fund</td></tr>
+          <tr><td>Price</td><td class="num">USD 0</td><td class="num">USD 55 per tax year</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">The free fund lets you check our figures against your own spreadsheet or your preparer before you pay.</p>
+    <p class="price">USD 55 <small>for tax year 2025, all funds on one return</small></p>
+    <p style="margin-top: var(--half);"><a class="btn btn-primary" href={withBase('/')}>Start with your first fund</a></p>
+  </section>
+
+  <section class="section" aria-labelledby="refund-h">
+    <h2 id="refund-h">Refund</h2>
+    <p>Refund on request within 14 days of paying. Write to the address in the <a href={withBase('/impressum')}>Impressum</a>. Next year is a new, optional purchase; nothing renews on its own.</p>
+    <p>Your lots and funds never leave your browser. The payment page is run by Stripe and only learns the tax year you chose.</p>
+  </section>
+
+  <section class="section" aria-labelledby="cmp-h">
+    <h2 id="cmp-h">What the alternatives charge</h2>
+    <div class="table-wrap">
+      <table class="ledger">
+        <thead><tr><th>Option</th><th>Price shown by the seller</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>PFIC Workbook</td><td>USD 55 per tax year, all funds</td><td>This page</td></tr>
+          <tr><td>PFIC Pro (Expat Tax Tools)</td><td>USD 60 a year plus USD 85 per form pay-as-you-go; five funds come to USD 485</td><td><a href="https://expattaxtools.com/pfic-pro-calculator/">expattaxtools.com</a>, effective November 2026</td></tr>
+          <tr><td>Taxes for Expats (CPA service)</td><td>USD 200 for the first form, USD 150 for each further one, on top of a USD 450 federal return; §1291 cases billed hourly</td><td><a href="https://www.taxesforexpats.com/services/pfic-filing.html">taxesforexpats.com</a>, read 2026-11-16</td></tr>
+          <tr><td>Cross-border CPAs, as quoted for Indian funds</td><td>USD 500 to 2,000 per fund per year</td><td><a href="https://getbelong.com/blog/mutual-funds/report-indian-mutual-funds-on-us-tax-return/">getbelong.com</a>, updated 2026-03-09</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Prices are what each seller's page showed on 2026-11-16 and may have changed. PFIC Pro also sells to preparers and has plans we do not list.</p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>

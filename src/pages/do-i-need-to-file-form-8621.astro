@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import ThresholdChecker from '../components/ThresholdChecker';
+import { withBase } from '../lib/url';
+---
+<Base
+  title="Do I need to file Form 8621? A threshold check | PFIC Workbook"
+  description="Answer three questions to see whether a foreign mutual fund or ETF holding most likely needs Form 8621, or may fall under the small-holding exception."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Filing threshold</p>
+      <h1>Do you need to file Form 8621?</h1>
+      <p class="lede">Enter the year-end value of your foreign funds and what happened during the year. Nothing is sent anywhere.</p>
+    </div>
+  </section>
+
+  <ThresholdChecker client:load />
+
+  <section class="section" aria-labelledby="how-h">
+    <h2 id="how-h">What this checks</h2>
+    <p>This check looks at three things: the total year-end value of the funds, a distribution or sale during the year, and any QEF or mark-to-market election. It uses the de minimis rule of Treas. Reg. §1.1298-1(c), with USD 25,000 for one filer and USD 50,000 for a joint return.</p>
+    <p class="pencil-note">Wording being checked against the 12/2025 instructions. Read the Exceptions part of the <a href="https://www.irs.gov/pub/irs-pdf/i8621.pdf">Form 8621 instructions</a> before you rely on an exemption.</p>
+    <p>Once you know you file, <a href={withBase('/')}>start the workbook</a>. The first fund is free.</p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>
