@@ -6,6 +6,9 @@ import { defaultState, exportWorkbook, importWorkbook, loadState, saveState, typ
 import type { Regime } from '../lib/engine/types';
 import { verifyLicense, LICENSE_KEY, type LicensePayload } from '../lib/license';
 import { isFundUnlocked } from '../lib/paywall';
+import { track } from '../lib/analytics';
+import { typingLines, resultsCsv } from '../lib/export';
+import type { FundResult } from '../lib/engine/types';
 
 const PUBLIC_KEY = (import.meta.env.PUBLIC_LICENSE_PUBLIC_KEY as string | undefined) ?? '';
 
@@ -43,6 +46,8 @@ export default function Workbook() {
   const [licenseInput, setLicenseInput] = useState('');
   const [payMsg, setPayMsg] = useState('');
   const [paying, setPaying] = useState(false);
+  const [dlMsg, setDlMsg] = useState('');
+  const [showLines, setShowLines] = useState(false);
 
   useEffect(() => {
     try {
@@ -113,7 +118,49 @@ export default function Workbook() {
   const electYear = fund.mtmElectionYear ? String(fund.mtmElectionYear) : '';
   const setElectYear = (v: string) => patch({ mtmElectionYear: v ? Number(v) : undefined });
 
+  function save(data: BlobPart, type: string, filename: string) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type }));
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  async function downloadZip() {
+    setDlMsg('Building your files…');
+    try {
+      // pdf-lib and fflate load only now.
+      const { buildZip } = await import('../lib/pdf/statements');
+      const items = state.funds
+        .map((f, i) => ({ f, i, o: evaluate({ ...f, settings: state.settings }) }))
+        .filter((x) => x.o.kind === 'done' && isFundUnlocked(x.i, licensePayload, taxYear))
+        .map((x) => ({ name: x.f.name, result: (x.o as { result: FundResult }).result }));
+      const zip = await buildZip(items, taxYear);
+      save(zip, 'application/zip', `pfic-workbook-${taxYear}.zip`);
+      track('PDF downloaded', { funds: items.length });
+      setDlMsg('ZIP saved to your downloads. It holds statements, a CSV and the lines to type, for every fund you have unlocked.');
+    } catch {
+      setDlMsg('The files could not be built in this browser. Try the CSV instead.');
+    }
+  }
+  function downloadCsv(r: FundResult) {
+    save(resultsCsv(name, r), 'text/csv', `pfic-lots-${taxYear}.csv`);
+    setDlMsg('CSV saved to your downloads.');
+  }
+  function onRowKey(e: KeyboardEvent, i: number) {
+    const t = e.target as HTMLElement;
+    if (e.key === 'Enter' && t.tagName === 'INPUT') {
+      e.preventDefault();
+      setRows((r) => [...r.slice(0, i + 1), blankRow(), ...r.slice(i + 1)]);
+    } else if (e.key === 'Delete' && t.tagName === 'BUTTON') {
+      e.preventDefault();
+      removeRow(i);
+    }
+  }
+  function removeRow(i: number) {
+    if (confirm(`Remove row ${i + 1}?`)) setRows((x) => x.filter((_, j) => j !== i));
+  }
   async function buy() {
+    track('Checkout started');
     setPaying(true);
     setPayMsg('');
     try {
@@ -135,11 +182,13 @@ export default function Workbook() {
       setState((s) => ({ ...s, license: licenseInput.trim() }));
       setLicenseInput('');
       setPayMsg(`License accepted for tax year ${p.taxYear}.`);
+      track('License activated');
     } else if (p) setPayMsg(`This license is for tax year ${p.taxYear}, not ${taxYear}. Change the tax year above or buy ${taxYear}.`);
     else setPayMsg('This code is not a valid license. Paste it exactly as it was sent, with the dot in the middle.');
   }
   function addFund() {
     setState((s) => ({ ...s, funds: [...s.funds, blankFund()] }));
+    track('Fund added', { funds: state.funds.length + 1 });
     setActive(state.funds.length);
     setConfirmDelete(false);
   }
@@ -174,11 +223,16 @@ export default function Workbook() {
   const pasteRef = useRef<HTMLTextAreaElement>(null);
 
   const outcome = useMemo(() => evaluate({ ...fund, settings: state.settings }), [fund, state.settings]);
+  const resultKey = outcome.kind === 'done' && !outcome.result.blocked ? `${idx}:${taxYear}:${outcome.result.part5?.l16e ?? outcome.result.part4?.taxYear.gain ?? 0}` : '';
+  useEffect(() => {
+    if (resultKey && unlocked) track('Results computed', { funds: state.funds.length });
+  }, [resultKey, unlocked]);
   const years = useMemo(() => yearsNeeded(rowsToLots(rows, currency).lots, taxYear), [rows, currency, taxYear]);
 
   function importText(text: string) {
     const res = parseLots(text);
     if (res.lots.length > 0) {
+      track('Lots pasted', { lots: res.lots.length });
       setRows((r) => [...r.filter((x) => x.date || x.units || x.amount), ...res.lots.map(lotToRow)]);
     }
     if (res.errors.length > 0) {
@@ -371,7 +425,7 @@ export default function Workbook() {
               {rows.map((r, i) => {
                 const usd = r.usd !== '' ? Number(r.usd) : currency === 'USD' && r.fx === '' ? Number(r.amount) : Number(r.amount) * Number(r.fx);
                 return (
-                  <tr key={i}>
+                  <tr key={i} onKeyDown={(e) => onRowKey(e, i)}>
                     <td><input class="input" aria-label={`Row ${i + 1} date`} placeholder="YYYY-MM-DD" value={r.date} onInput={(e) => setRow(i, 'date', e.currentTarget.value)} /></td>
                     <td>
                       <select class="input" aria-label={`Row ${i + 1} type`} value={r.type} onChange={(e) => setRow(i, 'type', e.currentTarget.value)}>
@@ -382,7 +436,7 @@ export default function Workbook() {
                     <td><input class="input num" inputMode="decimal" aria-label={`Row ${i + 1} amount`} value={r.amount} onInput={(e) => setRow(i, 'amount', e.currentTarget.value)} /></td>
                     <td><input class="input num" inputMode="decimal" aria-label={`Row ${i + 1} rate to USD`} value={r.fx} placeholder={currency === 'USD' ? '1' : ''} onInput={(e) => setRow(i, 'fx', e.currentTarget.value)} /></td>
                     <td class="num">{Number.isFinite(usd) ? cents(usd) : ''}</td>
-                    <td><button type="button" class="btn-quiet" aria-label={`Remove row ${i + 1}`} onClick={() => setRows((x) => x.filter((_, j) => j !== i))}>Remove</button></td>
+                    <td><button type="button" class="btn-quiet" aria-label={`Remove row ${i + 1}`} onClick={() => removeRow(i)}>Remove</button></td>
                   </tr>
                 );
               })}
@@ -546,6 +600,25 @@ export default function Workbook() {
             <ul class="flag-list">
               {outcome.result.flags.map((f) => <li key={f.id} class="pencil-note">{f.message}</li>)}
             </ul>
+            {!outcome.result.blocked && (
+              <section style="margin-top: var(--row);">
+                <h3>Take it with you</h3>
+                <div class="tool-actions">
+                  <button type="button" class="btn btn-primary" onClick={downloadZip}>Download ZIP: statements, CSV, lines</button>
+                  <button type="button" class="btn btn-secondary" onClick={() => downloadCsv(outcome.result)}>Results CSV</button>
+                  <button type="button" class="btn-quiet" aria-expanded={showLines} onClick={() => setShowLines((v) => !v)}>
+                    {showLines ? 'Hide' : 'Show'} lines to type into your tax software
+                  </button>
+                </div>
+                <p class="drop-status" role="status" aria-live="polite">{dlMsg}</p>
+                {showLines && (
+                  <div>
+                    <p class="caption">Whole dollars, as the form wants them. Each line id is the one printed on Form 8621.</p>
+                    {typingLines(outcome.result).map((l, i) => <Line key={i} ln={l.ln} label={l.label} value={l.value} />)}
+                  </div>
+                )}
+              </section>
+            )}
             <p class="disclaimer">{DISCLAIMER}</p>
           </div>
         )}
