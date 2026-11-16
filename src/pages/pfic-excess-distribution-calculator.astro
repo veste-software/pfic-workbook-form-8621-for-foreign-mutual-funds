@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import ExcessCalculator from '../components/ExcessCalculator';
+import { withBase } from '../lib/url';
+---
+<Base
+  title="PFIC excess distribution calculator for several lots | PFIC Workbook"
+  description="Enter the lots you bought and sold. See the gain spread over the days held, the tax on each earlier year and the interest, worked out in your browser."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Calculator</p>
+      <h1>Gain on a sale of PFIC units, spread over the years you held them.</h1>
+      <p class="lede">Paste your lots in US dollars. The calculator matches each sale to the oldest units, spreads each gain by day, and adds tax and interest for the earlier years.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="calc-h">
+    <h2 id="calc-h">Your lots</h2>
+    <ExcessCalculator client:load />
+  </section>
+
+  <section class="section" aria-labelledby="how-h">
+    <h2 id="how-h">How it is worked out</h2>
+    <p>Sales are matched to purchases first in, first out. Each gain is divided by the days held, and the part that falls in earlier years is taxed at the highest rate of that year, with interest at the IRS underpayment rate from the due date of that year's return. The part in the current year is ordinary income. The full rules and rate tables are on <a href={withBase('/how-it-works')}>how it works</a>.</p>
+    <p>This page takes US dollar amounts. For a fund in another currency, with year-end prices and several funds, use the <a href={withBase('/')}>workbook</a>. The button above carries your lots there.</p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>

@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import OpenButton from '../components/OpenButton';
+import { withBase } from '../lib/url';
+---
+<Base
+  title="Form 8621 for Indian mutual funds and SIPs: lots, tax year, MTM | PFIC Workbook"
+  description="A guide for US taxpayers with Indian mutual funds and monthly SIPs: where the lot data comes from, calendar year versus Indian FY, and the mark-to-market debate."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Guide for SIP holders</p>
+      <h1>Indian mutual funds on Form 8621, one SIP instalment at a time.</h1>
+      <p class="lede">Each monthly instalment is its own lot. The form wants one figure per fund, so the work is getting from a statement of 60 purchases to those figures.</p>
+      <p><OpenButton client:load currency="INR" label="Start with INR" /></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="lots-h">
+    <h2 id="lots-h">Where your lots come from</h2>
+    <p>Indian funds are served by two registrars, CAMS and KFintech. Both send a consolidated account statement (CAS) that lists every transaction across your funds. MFCentral offers the same statement for both registrars in one place. Ask for the version with all transactions, from the first purchase, not the summary of current holdings.</p>
+    <p>For each line you need four things: the date, whether it was a purchase, a reinvested dividend or a redemption, the units, and the amount in rupees. Copy them into the <a href={withBase('/pfic-calculator-excel-template')}>CSV template</a> or paste them straight into the workbook. SIP instalments are <code>buy</code>, dividend reinvestments are <code>reinvest</code>, and sales and switch-outs are <code>redeem</code>.</p>
+    <p class="pencil-note">A switch from one fund to another is a sale of the first and a purchase of the second. Enter both lines.</p>
+    <p>Parsing the CAS PDF itself is not built. The workbook reads rows you paste.</p>
+  </section>
+
+  <section class="section" aria-labelledby="fy-h">
+    <h2 id="fy-h">Calendar year or Indian financial year</h2>
+    <p>The Indian financial year runs from 1 April to 31 March. Your Form 8621 follows your US tax year, which for most individuals is the calendar year. A statement for FY 2024-25 therefore covers nine months of 2024 and three months of 2025, and you need to split the lots by date. The workbook does this for you: it takes every lot with its own date and only looks at the year you choose.</p>
+    <p>You also need the fund's price per unit (NAV) and the rupee rate to the dollar on 31 December of each year you held it. The workbook asks for both in the year-end table.</p>
+  </section>
+
+  <section class="section" aria-labelledby="mtm-h">
+    <h2 id="mtm-h">The mark-to-market debate</h2>
+    <p>With many small purchases, the default §1291 method gets heavy, and the mark-to-market election under §1296 is attractive: gain or loss is worked out each year from the year-end price. Cross-border advisers write that most of them recommend it for Indian mutual funds, <em>"despite the technical exchange qualification issue"</em> (Belong, updated 9 March 2026, <a href="https://getbelong.com/blog/mutual-funds/report-indian-mutual-funds-on-us-tax-return/" rel="noopener">source</a>).</p>
+    <p>That qualification issue is this: §1296 applies to "marketable stock", which means stock regularly traded on a qualified exchange. Whether an Indian open-ended fund, sold and redeemed at NAV, meets that test is argued both ways. The workbook does not decide it for you. It calculates the figures under either method, and flags the choice for your preparer.</p>
+    <p>An election made late has its own consequences for lots bought earlier. See <a href={withBase('/form-8621-mark-to-market')}>mark-to-market explained</a> for the worked example.</p>
+  </section>
+
+  <section class="section" aria-labelledby="next-h">
+    <h2 id="next-h">Before you start</h2>
+    <p>First check that you must file at all: <a href={withBase('/do-i-need-to-file-form-8621')}>do I need to file Form 8621</a>. Then <a href={withBase('/how-it-works')}>how the figures are worked out</a>.</p>
+    <p><OpenButton client:load currency="INR" label="Start with INR" /></p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>

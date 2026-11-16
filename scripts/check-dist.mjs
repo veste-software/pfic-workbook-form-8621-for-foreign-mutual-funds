@@ -20,7 +20,7 @@ const sitemap = existsSync(new URL('sitemap-0.xml', dist)) ? readFileSync(new UR
 if (!sitemap) problems.push('dist/sitemap-0.xml is missing');
 
 const DISCLAIMER = 'Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.';
-const NEEDS_DISCLAIMER = ['', 'pricing', 'how-it-works', 'form-8621-mark-to-market', 'do-i-need-to-file-form-8621'];
+const NEEDS_DISCLAIMER = ['', 'pricing', 'how-it-works', 'form-8621-mark-to-market', 'do-i-need-to-file-form-8621', 'form-8621-indian-mutual-funds-sip', 'form-8621-ucits-etf', 'pfic-excess-distribution-calculator'];
 
 for (const s of slugs) {
   const h = html(s);

@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import OpenButton from '../components/OpenButton';
+import { withBase } from '../lib/url';
+---
+<Base
+  title="Form 8621 for UCITS ETFs and European funds, for US expats | PFIC Workbook"
+  description="Why a UCITS ETF bought in euros or pounds is a PFIC for a US taxpayer, what lot data you need from your broker, and how to get to the Form 8621 figures."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Guide for expats</p>
+      <h1>UCITS ETFs and European funds on Form 8621.</h1>
+      <p class="lede">A fund that is fine for a European investor is usually a PFIC for a US taxpayer. If you moved abroad and kept buying the local index ETF, each purchase now needs a lot, a date and a rate.</p>
+      <p><OpenButton client:load currency="EUR" label="Start with EUR" /> <OpenButton client:load currency="GBP" label="Start with GBP" /></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="why-h">
+    <h2 id="why-h">Why a UCITS ETF is a PFIC</h2>
+    <p>A foreign corporation is a PFIC when most of its income is passive or most of its assets produce passive income. A fund that holds shares and bonds meets that test almost by definition. UCITS is the European fund wrapper. It does not report to the US, and few such funds offer the annual statement that the QEF election needs, so the choice for most holders is the default §1291 method or a mark-to-market election.</p>
+    <p>Whether your fund is a PFIC is a question for your preparer. The workbook starts from the point where you have decided it is one.</p>
+  </section>
+
+  <section class="section" aria-labelledby="data-h">
+    <h2 id="data-h">What to get from your broker</h2>
+    <p>Ask for the full transaction history from the first purchase. For each trade you need the date, the units, and the amount in euros or pounds. Add the exchange rate to the dollar on the trade date, or the dollar amount if your broker states one. Accumulating funds reinvest inside the fund and produce no lines. Distributing funds that pay into cash are not modelled yet: the workbook treats reinvested distributions as distributions and does not handle cash payouts.</p>
+    <p class="pencil-note">Use one consistent source for exchange rates, and keep a note of which. The form asks for dollars.</p>
+    <p>For each 31 December you held units, you also need the fund's price per unit and that day's rate.</p>
+  </section>
+
+  <section class="section" aria-labelledby="how-h">
+    <h2 id="how-h">From lots to the form</h2>
+    <p>Paste your lots in the workbook, choose the default method or mark-to-market, and read the lines off the results. The <a href={withBase('/how-it-works')}>rules and sources</a> are listed in full. If you are weighing the election, <a href={withBase('/form-8621-mark-to-market')}>mark-to-market is worked through with figures</a>. Not sure whether you must file? <a href={withBase('/do-i-need-to-file-form-8621')}>Check the thresholds</a>.</p>
+    <p><OpenButton client:load currency="EUR" label="Start with EUR" /> <OpenButton client:load currency="GBP" label="Start with GBP" /></p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>
