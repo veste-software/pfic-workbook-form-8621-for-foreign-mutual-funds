@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import TemplateImport from '../components/TemplateImport';
+import { withBase } from '../lib/url';
+---
+<Base
+  title="PFIC calculator spreadsheet template (CSV) for Form 8621 | PFIC Workbook"
+  description="Download a CSV template for your fund lots: date, type, units, amount and exchange rate. Check the file in your browser, then load it into the workbook."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Template</p>
+      <h1>A spreadsheet template for your fund lots.</h1>
+      <p class="lede">One row per purchase, reinvestment or sale. Fill it in Excel, Numbers or Sheets, save as CSV, and paste it into the workbook.</p>
+      <p><a class="btn btn-primary" href={withBase('/templates/pfic-lots-template.csv')} download>Download the CSV template</a></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cols-h">
+    <h2 id="cols-h">The columns</h2>
+    <div class="table-wrap">
+      <table class="ledger">
+        <thead><tr><th>Column</th><th>What goes in</th></tr></thead>
+        <tbody>
+          <tr><td><code>date</code></td><td>The trade date as YYYY-MM-DD. DD-MM-YYYY and DD/MM/YYYY work when the day is above 12.</td></tr>
+          <tr><td><code>type</code></td><td><code>buy</code> for a purchase or SIP instalment, <code>reinvest</code> for a distribution that bought more units, <code>redeem</code> for a sale.</td></tr>
+          <tr><td><code>units</code></td><td>Units bought or sold on that date.</td></tr>
+          <tr><td><code>amount</code></td><td>The money paid or received, in the fund's currency.</td></tr>
+          <tr><td><code>fx_rate</code></td><td>US dollars per one unit of the fund's currency on the trade date. Leave empty for a USD fund.</td></tr>
+          <tr><td><code>usd_amount</code></td><td>Optional. A US dollar amount you already know. It replaces amount × fx_rate.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">The three rows in the template are made up. Delete them before you enter your own.</p>
+    <p>A row that cannot be read is reported with its line number. No row is dropped silently.</p>
+  </section>
+
+  <section class="section" aria-labelledby="check-h">
+    <h2 id="check-h">Check your file</h2>
+    <TemplateImport client:load />
+    <p>This only checks the format, in your browser. To see the figures, paste the same rows into the <a href={withBase('/')}>workbook</a>.</p>
+  </section>
+
+  <section class="section" aria-labelledby="out-h">
+    <h2 id="out-h">Getting results back out</h2>
+    <p>The workbook shows a per-lot table for each fund. You can save the whole workbook as a file and open it again later. A results CSV for your own spreadsheet is planned and not available yet.</p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>

@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+import { computeFund } from '../lib/engine';
+import type { Fund } from '../lib/engine/types';
+
+const cents = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const whole = (n: number) => Math.round(n).toLocaleString('en-US');
+
+// Exhibit 1: the same synthetic fund as tests/engine/fixture-2c-mtm.test.ts.
+const ex1: Fund = {
+  name: 'Synthetic MTM Fund',
+  currency: 'USD',
+  regime: 'mtm',
+  lots: [{ date: '2023-03-01', type: 'buy', units: 100, amount: 1000, fxRate: 1 }],
+  yearEnds: [
+    { year: 2023, nav: 12, fx: 1 },
+    { year: 2024, nav: 9, fx: 1 },
+    { year: 2025, nav: 11, fx: 1 },
+  ],
+};
+const r1 = computeFund(ex1, { taxYear: 2025, filingStatus: 'single' });
+const years = r1.part4?.years ?? [];
+
+// Exhibit 2: the same synthetic fund as tests/engine/fixture-2d-late-election.test.ts.
+const ex2: Fund = {
+  name: 'Synthetic late-election fund',
+  currency: 'USD',
+  regime: 'mtm',
+  mtmElectionYear: 2025,
+  lots: [
+    { date: '2022-03-10', type: 'buy', units: 100, amount: 1000, fxRate: 1 },
+    { date: '2025-06-01', type: 'buy', units: 50, amount: 800, fxRate: 1 },
+  ],
+  yearEnds: [{ year: 2025, nav: 14, fx: 1 }],
+};
+const r2 = computeFund(ex2, { taxYear: 2025, filingStatus: 'single' });
+const p5 = r2.part5;
+const y25 = r2.part4?.taxYear;
+---
+<Base
+  title="Form 8621 mark-to-market election, lot by lot | PFIC Workbook"
+  description="How the mark-to-market election works on Form 8621 Part IV: yearly gain, loss limited to unreversed inclusions, basis carried per lot, and the late-election case under §1296(j)."
+>
+  <section class="intro">
+    <div class="intro-text">
+      <p class="eyebrow">Method</p>
+      <h1>Mark-to-market on Form 8621, lot by lot.</h1>
+      <p class="lede">With the election, you report the change in value of a fund every year as ordinary income, and you track basis for each lot. Two worked exhibits below were computed by the same engine the workbook uses.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="rules-h">
+    <h2 id="rules-h">The rule in five lines</h2>
+    <ol>
+      <li>At each year-end, a lot's gain is its market value minus its adjusted basis. The gain is ordinary income (IRC §1296(a)(1)).</li>
+      <li>A loss is allowed only up to the net mark-to-market gain you included for that lot in earlier years that has not yet been reversed (IRC §1296(a)(2)).</li>
+      <li>Basis goes up by the gain you included and down by the loss you were allowed (IRC §1296(b)).</li>
+      <li>A lot bought during the year is marked at that year-end against its cost.</li>
+      <li>On a sale, a gain is ordinary. A loss is ordinary up to the unreversed inclusions, and the rest is a capital loss (IRC §1296(c)).</li>
+    </ol>
+    <p>Source: IRC §1296 and the Form 8621 instructions (Rev. 12/2025), Part IV. The rules are listed with their sources on <a href={withBase('/how-it-works')}>How it works</a>.</p>
+  </section>
+
+  <section class="section" aria-labelledby="ex1-h">
+    <h2 id="ex1-h">Exhibit 1: three years, one lot</h2>
+    <p>100 units bought on 2023-03-01 for USD 1,000, in a USD fund. Year-end values per unit: 12, 9 and 11.</p>
+    <div class="table-wrap">
+      <table class="ledger">
+        <thead>
+          <tr><th>Year-end</th><th>Value</th><th>Basis before</th><th>Gain (+) or allowed loss (−)</th><th>Basis after</th><th>Unreversed inclusions</th></tr>
+        </thead>
+        <tbody>
+          {years.map((y) => y.rows.map((row) => (
+            <tr>
+              <td class="num">{y.year}</td>
+              <td class="num">{cents(row.value)}</td>
+              <td class="num">{cents(row.basisBefore)}</td>
+              <td class="num">{cents(row.included)}</td>
+              <td class="num">{cents(row.basisAfter)}</td>
+              <td class="num">{cents(row.unreversedAfter)}</td>
+            </tr>
+          )))}
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Exhibit 1. In 2024 the lot lost 300, but only 200 had been included before, so 200 is allowed and 100 is not. Basis falls to 1,000, not 900.</p>
+    {years.length > 1 && (
+      <p class="pencil-note">Unallowed loss in 2024: USD {cents(years[1].unallowedLoss)}. Check how your preparer treats it.</p>
+    )}
+  </section>
+
+  <section class="section" aria-labelledby="ex2-h">
+    <h2 id="ex2-h">Exhibit 2: the late election, §1296(j)</h2>
+    <p>If you elect after the first year you held the fund, units held before January 1 of the election year are treated as sold at the year-end value. That deemed sale goes through the §1291 rules on Part V. Here 100 units were bought on 2022-03-10 for USD 1,000 and 50 units on 2025-06-01 for USD 800. The election applies from 2025 and the 2025 year-end value is 14 per unit.</p>
+    {p5 && y25 && (
+      <div class="table-wrap">
+        <table class="ledger">
+          <thead><tr><th>Line</th><th>What it holds</th><th>USD</th></tr></thead>
+          <tbody>
+            <tr><td>15f</td><td>Gain on the deemed sale of the old lot</td><td class="num">{whole(p5.l15f)}</td></tr>
+            <tr><td>16b</td><td>Share allocated to 2025</td><td class="num">{whole(p5.l16b)}</td></tr>
+            <tr><td>16c</td><td>Deferred tax on the earlier years at 37%</td><td class="num">{whole(p5.l16c)}</td></tr>
+            <tr><td>16f</td><td>Interest on that tax</td><td class="num">{whole(p5.l16f)}</td></tr>
+            <tr><td>Part IV</td><td>Gain on the old lot after the deemed sale</td><td class="num">{whole(y25.rows.find((x) => x.units === 100)?.included ?? 0)}</td></tr>
+            <tr><td>Part IV</td><td>Loss on the new lot, not allowed (no earlier inclusions)</td><td class="num">{whole(y25.unallowedLoss)}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    )}
+    <p class="caption">Exhibit 2. The old lot's basis is reset to 1,400 after the deemed sale, so it adds nothing more to Part IV in 2025.</p>
+    <p class="pencil-note">Late elections have more conditions than this page shows. Read §1296(j) and the instructions, or ask a preparer, before you file.</p>
+  </section>
+
+  <section class="section" aria-labelledby="try-h">
+    <h2 id="try-h">Try it with your own lots</h2>
+    <p>In the workbook choose mark-to-market for a fund, enter the year-end values and, for a late election, the election year. The first fund is free. <a href={withBase('/')}>Open the workbook</a>.</p>
+    <p class="disclaimer">Prepared with PFIC Workbook from figures you entered. This is not tax advice. Check it or have a preparer check it.</p>
+  </section>
+</Base>
